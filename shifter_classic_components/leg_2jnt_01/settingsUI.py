@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'C:/datawork/mgear_dev/mgear_dist/shifter_classic_components/shifter_classic_components/leg_2jnt_01/settingsUI.ui'
+#
+# Created: Tue Jun 19 18:16:17 2018
+#      by: pyside2-uic  running on PySide2 2.0.0~alpha0
+#
+# WARNING! All changes made in this file will be lost!
+
 import mgear.core.pyqt as gqt
 QtGui, QtCore, QtWidgets, wrapInstance = gqt.qt_import()
 
@@ -58,12 +67,12 @@ class Ui_Form(object):
         self.divisions_label.setObjectName("divisions_label")
         self.horizontalLayout.addWidget(self.divisions_label)
         self.div0_spinBox = QtWidgets.QSpinBox(self.groupBox)
-        self.div0_spinBox.setMinimum(1)
+        self.div0_spinBox.setMinimum(0)
         self.div0_spinBox.setProperty("value", 2)
         self.div0_spinBox.setObjectName("div0_spinBox")
         self.horizontalLayout.addWidget(self.div0_spinBox)
         self.div1_spinBox = QtWidgets.QSpinBox(self.groupBox)
-        self.div1_spinBox.setMinimum(1)
+        self.div1_spinBox.setMinimum(0)
         self.div1_spinBox.setProperty("value", 2)
         self.div1_spinBox.setObjectName("div1_spinBox")
         self.horizontalLayout.addWidget(self.div1_spinBox)
@@ -74,6 +83,10 @@ class Ui_Form(object):
         self.extraTweak_checkBox = QtWidgets.QCheckBox(self.groupBox)
         self.extraTweak_checkBox.setObjectName("extraTweak_checkBox")
         self.verticalLayout.addWidget(self.extraTweak_checkBox)
+        self.supportJoints_checkBox = QtWidgets.QCheckBox(self.groupBox)
+        self.supportJoints_checkBox.setChecked(True)
+        self.supportJoints_checkBox.setObjectName("supportJoints_checkBox")
+        self.verticalLayout.addWidget(self.supportJoints_checkBox)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.squashStretchProfile_pushButton = QtWidgets.QPushButton(self.groupBox)
@@ -203,6 +216,10 @@ class Ui_Form(object):
         self.extraTweak_checkBox.setStatusTip(gqt.fakeTranslate("Form", "This option set the axis of the mid CTL (elbow) and the up vector control to move in a mirror behaviour ", None, -1))
         self.extraTweak_checkBox.setWhatsThis(gqt.fakeTranslate("Form", "This option set the axis of the mid CTL (elbow) and the up vector control to move in a mirror behaviour ", None, -1))
         self.extraTweak_checkBox.setText(gqt.fakeTranslate("Form", "Add Extra Tweak Ctl", None, -1))
+        self.supportJoints_checkBox.setToolTip(gqt.fakeTranslate("Form", "This option set the axis of the mid CTL (elbow) and the up vector control to move in a mirror behaviour ", None, -1))
+        self.supportJoints_checkBox.setStatusTip(gqt.fakeTranslate("Form", "This option set the axis of the mid CTL (elbow) and the up vector control to move in a mirror behaviour ", None, -1))
+        self.supportJoints_checkBox.setWhatsThis(gqt.fakeTranslate("Form", "This option set the axis of the mid CTL (elbow) and the up vector control to move in a mirror behaviour ", None, -1))
+        self.supportJoints_checkBox.setText(gqt.fakeTranslate("Form", "Support Knee Joints", None, -1))
         self.squashStretchProfile_pushButton.setText(gqt.fakeTranslate("Form", "Squash and Stretch Profile", None, -1))
         self.ikRefArray_groupBox.setTitle(gqt.fakeTranslate("Form", "IK Reference Array", None, -1))
         self.ikRefArray_copyRef_pushButton.setText(gqt.fakeTranslate("Form", "Copy from UpV Ref", None, -1))

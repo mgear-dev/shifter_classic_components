@@ -326,7 +326,12 @@ class Component(component.Main):
         # Divisions ----------------------------------------
         # We have at least one division at the start, the end and one for
         # the elbow. + 2 for knee angle control
-        self.divisions = self.settings["div0"] + self.settings["div1"] + 3 + 2
+        if self.settings["supportJoints"]:
+            ej = 2
+        else:
+            ej = 0
+
+        self.divisions = self.settings["div0"] + self.settings["div1"] + 3 + ej
 
         self.div_cns = []
 
@@ -622,28 +627,39 @@ class Component(component.Main):
         # controler.. and we wont have this nice tangent + roll
         for i, div_cns in enumerate(self.div_cns):
             subdiv = False
-            if i == len(self.div_cns) - 1 or i == 0:
-                subdiv = 45
-            else:
-                subdiv = 10
+            if self.settings["supportJoints"]:
+                if i == len(self.div_cns) - 1 or i == 0:
+                    subdiv = 45
+                else:
+                    subdiv = 10
 
-            if i < (self.settings["div0"] + 1):
-                perc = i * .5 / (self.settings["div0"] + 1.0)
-            elif i < (self.settings["div0"] + 2):
-                perc = .49
-                subdiv = 45
-            elif i < (self.settings["div0"] + 3):
-                perc = .50
-                subdiv = 45
-            elif i < (self.settings["div0"] + 4):
-                perc = .51
-                subdiv = 45
+                if i < (self.settings["div0"] + 1):
+                    perc = i * .5 / (self.settings["div0"] + 1.0)
+                elif i < (self.settings["div0"] + 2):
+                    perc = .49
+                    subdiv = 45
+                elif i < (self.settings["div0"] + 3):
+                    perc = .50
+                    subdiv = 45
+                elif i < (self.settings["div0"] + 4):
+                    perc = .51
+                    subdiv = 45
 
+                else:
+                    perc = (.5
+                            + (i - self.settings["div0"] - 3.0)
+                            * .5
+                            / (self.settings["div1"] + 1.0))
             else:
-                perc = (.5
-                        + (i - self.settings["div0"] - 3.0)
-                        * .5
-                        / (self.settings["div1"] + 1.0))
+                subdiv = 40
+                if i < (self.settings["div0"] + 1):
+                    perc = i * .5 / (self.settings["div0"] + 1.0)
+                elif i < (self.settings["div0"] + 2):
+                    perc = .501
+                else:
+                    perc = .5 + \
+                        (i - self.settings["div0"] - 1.0) * .5 / \
+                        (self.settings["div1"] + 1.0)
 
             perc = max(.0001, min(.990, perc))
 
