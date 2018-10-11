@@ -34,6 +34,8 @@ class Component(component.Main):
         self.length2 = vector.getDistance(self.guide.apos[2],
                                           self.guide.apos[3])
 
+        print self.length0
+        print self.size
         # 1 bone chain for upv ref
         self.armChainUpvRef = primitive.add2DChain(
             self.root,
@@ -346,8 +348,10 @@ class Component(component.Main):
             ej = 2
         else:
             ej = 0
-
+        print self.settings["div0"]
+        print self.settings["div1"]
         self.divisions = self.settings["div0"] + self.settings["div1"] + 3 + ej
+        print self.divisions
 
         self.div_cns = []
 
@@ -560,10 +564,14 @@ class Component(component.Main):
 
         # Setup ------------------------------------------
         # Eval Fcurve
-        self.st_value = fcurve.getFCurveValues(self.settings["st_profile"],
-                                               self.divisions)
-        self.sq_value = fcurve.getFCurveValues(self.settings["sq_profile"],
-                                               self.divisions)
+        if self.guide.paramDefs["st_profile"].value:
+             self.st_value = self.guide.paramDefs["st_profile"].value
+             self.sq_value = self.guide.paramDefs["sq_profile"].value
+        else:
+            self.st_value = fcurve.getFCurveValues(self.settings["st_profile"],
+                                                   self.divisions)
+            self.sq_value = fcurve.getFCurveValues(self.settings["sq_profile"],
+                                                   self.divisions)
 
         self.st_att = [self.addSetupParam("stretch_%s" % i,
                                           "Stretch %s" % i,
