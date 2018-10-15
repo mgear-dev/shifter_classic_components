@@ -34,8 +34,6 @@ class Component(component.Main):
         self.length2 = vector.getDistance(self.guide.apos[2],
                                           self.guide.apos[3])
 
-        print self.length0
-        print self.size
         # 1 bone chain for upv ref
         self.armChainUpvRef = primitive.add2DChain(
             self.root,
@@ -348,10 +346,8 @@ class Component(component.Main):
             ej = 2
         else:
             ej = 0
-        print self.settings["div0"]
-        print self.settings["div1"]
+
         self.divisions = self.settings["div0"] + self.settings["div1"] + 3 + ej
-        print self.divisions
 
         self.div_cns = []
 

@@ -85,6 +85,17 @@ class Guide(guide.ComponentGuide):
         self.pParentJointIndex = self.addParam(
             "parentJointIndex", "long", -1, None, None)
 
+    def get_divisions(self):
+
+        if self.root.supportJoints.get():
+            ej = 2
+        else:
+            ej = 0
+
+        self.divisions = self.root.div0.get() + self.root.div1.get() + 3 + ej
+
+        return self.divisions
+
 ##########################################################
 # Setting Page
 ##########################################################

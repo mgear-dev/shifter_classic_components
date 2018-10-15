@@ -235,6 +235,7 @@ class Component(component.Main):
         self.scl_transforms = []
         self.twister = []
         self.ref_twist = []
+        self.divisions = self.settings["division"]
 
         t = transform.getTransformLookingAt(
             self.guide.apos[0],
@@ -250,7 +251,7 @@ class Component(component.Main):
 
         self.jointList = []
         self.preiviousCtlTag = self.parentCtlTag
-        for i in range(self.settings["division"]):
+        for i in range(self.divisions):
 
             # References
             div_cns = primitive.addTransform(parentdiv,
@@ -264,15 +265,15 @@ class Component(component.Main):
             # if i in [0]:
             # TODO: add option setting to add or not the first and last
             # controller for the fk
-            # if i in [0, self.settings["division"] - 1] and False:
-            if i in [0, self.settings["division"] - 1]:
+            # if i in [0, self.divisions - 1] and False:
+            if i in [0, self.divisions - 1]:
                 fk_ctl = primitive.addTransform(
                     parentctl,
                     self.getName("%s_loc" % i),
                     transform.getTransform(parentctl))
 
                 fk_npo = fk_ctl
-                if i in [self.settings["division"] - 1]:
+                if i in [self.divisions - 1]:
                     self.fk_ctl.append(fk_ctl)
             else:
                 fk_npo = primitive.addTransform(
@@ -393,10 +394,18 @@ class Component(component.Main):
 
         # Setup ------------------------------------------
         # Eval Fcurve
-        self.st_value = fcurve.getFCurveValues(
-            self.settings["st_profile"], self.settings["division"])
-        self.sq_value = fcurve.getFCurveValues(
-            self.settings["sq_profile"], self.settings["division"])
+        # self.st_value = fcurve.getFCurveValues(
+        #     self.settings["st_profile"], self.divisions)
+        # self.sq_value = fcurve.getFCurveValues(
+        #     self.settings["sq_profile"], self.divisions)
+        if self.guide.paramDefs["st_profile"].value:
+             self.st_value = self.guide.paramDefs["st_profile"].value
+             self.sq_value = self.guide.paramDefs["sq_profile"].value
+        else:
+            self.st_value = fcurve.getFCurveValues(self.settings["st_profile"],
+                                                   self.divisions)
+            self.sq_value = fcurve.getFCurveValues(self.settings["sq_profile"],
+                                                   self.divisions)
 
         self.st_att = [self.addSetupParam("stretch_%s" % i,
                                           "Stretch %s" % i,
@@ -404,7 +413,7 @@ class Component(component.Main):
                                           self.st_value[i],
                                           -1,
                                           0)
-                       for i in range(self.settings["division"])]
+                       for i in range(self.divisions)]
 
         self.sq_att = [self.addSetupParam("squash_%s" % i,
                                           "Squash %s" % i,
@@ -412,7 +421,7 @@ class Component(component.Main):
                                           self.sq_value[i],
                                           0,
                                           1)
-                       for i in range(self.settings["division"])]
+                       for i in range(self.divisions)]
 
     # =====================================================
     # OPERATORS
@@ -503,10 +512,10 @@ class Component(component.Main):
         crv_node = node.createCurveInfoNode(self.slv_crv)
 
         # Division -----------------------------------------
-        for i in range(self.settings["division"]):
+        for i in range(self.divisions):
 
             # References
-            u = i / (self.settings["division"] - 1.0)
+            u = i / (self.divisions - 1.0)
 
             cns = applyop.pathCns(
                 self.div_cns[i], self.slv_crv, False, u, True)
@@ -591,7 +600,7 @@ class Component(component.Main):
                 pm.connectAttr(blend_node + ".output",
                                self.div_cns[i] + ".rotate")
 
-            elif i == self.settings["division"] - 1:
+            elif i == self.divisions - 1:
                 dm_node = node.createDecomposeMatrixNode(
                     self.ik1_ctl + ".worldMatrix")
 
