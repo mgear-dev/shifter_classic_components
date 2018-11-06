@@ -83,6 +83,11 @@ class Guide(guide.ComponentGuide):
         self.pParentJointIndex = self.addParam(
             "parentJointIndex", "long", -1, None, None)
 
+    def get_divisions(self):
+        """ Returns correct segments divisions """
+
+        self.divisions = self.root.div0.get() + self.root.div1.get() + 5
+        return self.divisions
 
 ##########################################################
 # Setting Page
