@@ -91,6 +91,11 @@ class Guide(guide.ComponentGuide):
                                                None,
                                                None)
 
+    def get_divisions(self):
+        """ Returns correct segments divisions """
+
+        self.divisions = (self.root.div0.get() + self.root.div1.get() + 4)
+        return self.divisions
 
 ##########################################################
 # Setting Page
