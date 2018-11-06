@@ -57,8 +57,11 @@ class Component(component.Main):
         vec_offset = ((self.guide.apos[1] - self.guide.apos[0]) * [1, 0, 0])
         tpv = self.guide.apos[0] + vec_offset
 
-        t = transform.getTransformLookingAt(
-            self.guide.apos[0], tpv, self.normal, "xz", self.negate)
+        t = transform.getTransformLookingAt(self.guide.apos[0],
+                                            self.guide.apos[1],
+                                            self.normal, "xz",
+                                            self.negate)
+
         # *ms* add FK isolation
         self.fk0_npo = primitive.addTransform(
             self.fk_cns, self.getName("fk0_npo"), t)
