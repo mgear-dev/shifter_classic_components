@@ -561,8 +561,8 @@ class Component(component.Main):
         # Setup ------------------------------------------
         # Eval Fcurve
         if self.guide.paramDefs["st_profile"].value:
-             self.st_value = self.guide.paramDefs["st_profile"].value
-             self.sq_value = self.guide.paramDefs["sq_profile"].value
+            self.st_value = self.guide.paramDefs["st_profile"].value
+            self.sq_value = self.guide.paramDefs["sq_profile"].value
         else:
             self.st_value = fcurve.getFCurveValues(self.settings["st_profile"],
                                                    self.divisions)

@@ -94,7 +94,7 @@ class Guide(guide.ComponentGuide):
 
     def get_divisions(self):
         """ Returns correct segments divisions """
-        
+
         self.divisions = (self.root.div0.get() + self.root.div1.get() +
                           self.root.div2.get() + 4)
         return self.divisions

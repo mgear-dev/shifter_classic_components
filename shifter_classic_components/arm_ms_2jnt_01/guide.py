@@ -93,6 +93,7 @@ class Guide(guide.ComponentGuide):
 # Setting Page
 ##########################################################
 
+
 class settingsTab(QtWidgets.QDialog, sui.Ui_Form):
     """The Component settings UI"""
 

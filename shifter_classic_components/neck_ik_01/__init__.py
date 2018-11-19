@@ -152,7 +152,7 @@ class Component(component.Main):
         self.twister = []
         self.ref_twist = []
 
-        self.divisions =  self.settings["division"]
+        self.divisions = self.settings["division"]
 
         parent_twistRef = primitive.addTransform(
             self.root,
@@ -169,7 +169,7 @@ class Component(component.Main):
             self.root, self.getName("intMRef"), t)
 
         self.previousCtlTag = self.parentCtlTag
-        for i in range( self.divisions):
+        for i in range(self.divisions):
 
             # References
             div_cns = primitive.addTransform(
@@ -185,7 +185,7 @@ class Component(component.Main):
 
             # Controlers (First and last one are fake)
 
-            if i in [ self.divisions - 1]:  # 0,
+            if i in [self.divisions - 1]:  # 0,
                 fk_ctl = primitive.addTransform(
                     scl_npo,
                     self.getName("%s_loc" % i),
@@ -329,13 +329,9 @@ class Component(component.Main):
 
         # Setup ------------------------------------------
         # Eval Fcurve
-        # self.st_value = fcurve.getFCurveValues(
-        #     self.settings["st_profile"],  self.divisions)
-        # self.sq_value = fcurve.getFCurveValues(
-        #     self.settings["sq_profile"],  self.divisions)
         if self.guide.paramDefs["st_profile"].value:
-             self.st_value = self.guide.paramDefs["st_profile"].value
-             self.sq_value = self.guide.paramDefs["sq_profile"].value
+            self.st_value = self.guide.paramDefs["st_profile"].value
+            self.sq_value = self.guide.paramDefs["sq_profile"].value
         else:
             self.st_value = fcurve.getFCurveValues(self.settings["st_profile"],
                                                    self.divisions)
@@ -346,7 +342,7 @@ class Component(component.Main):
                                           "Stretch %s" % i,
                                           "double",
                                           self.st_value[i], -1, 0)
-                       for i in range( self.divisions)]
+                       for i in range(self.divisions)]
 
         self.sq_att = [self.addSetupParam("squash_%s" % i,
                                           "Squash %s" % i,
@@ -354,7 +350,7 @@ class Component(component.Main):
                                           self.sq_value[i],
                                           0,
                                           1)
-                       for i in range( self.divisions)]
+                       for i in range(self.divisions)]
 
     # =====================================================
     # OPERATORS
@@ -402,10 +398,10 @@ class Component(component.Main):
         crv_node = node.createCurveInfoNode(self.slv_crv)
 
         # Division -----------------------------------------
-        for i in range( self.divisions):
+        for i in range(self.divisions):
 
             # References
-            u = i / ( self.divisions - 1.0)
+            u = i / (self.divisions - 1.0)
 
             cns = applyop.pathCns(
                 self.div_cns[i], self.slv_crv, False, u, True)
@@ -466,7 +462,7 @@ class Component(component.Main):
                            self.fk_npo[i].attr("r"))
 
             # Orientation Lock
-            if i ==  self.divisions - 1:
+            if i == self.divisions - 1:
                 dm_node = node.createDecomposeMatrixNode(
                     self.ik_ctl + ".worldMatrix")
                 blend_node = node.createBlendNode(

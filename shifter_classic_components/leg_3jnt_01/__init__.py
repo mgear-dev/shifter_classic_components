@@ -602,14 +602,9 @@ class Component(component.Main):
 
         # Setup ------------------------------------------
         # Eval Fcurve
-        # self.st_value = fcurve.getFCurveValues(self.settings["st_profile"],
-        #                                        self.divisions)
-        # self.sq_value = fcurve.getFCurveValues(self.settings["sq_profile"],
-        #                                        self.divisions)
-
         if self.guide.paramDefs["st_profile"].value:
-             self.st_value = self.guide.paramDefs["st_profile"].value
-             self.sq_value = self.guide.paramDefs["sq_profile"].value
+            self.st_value = self.guide.paramDefs["st_profile"].value
+            self.sq_value = self.guide.paramDefs["sq_profile"].value
         else:
             self.st_value = fcurve.getFCurveValues(self.settings["st_profile"],
                                                    self.divisions)
@@ -918,7 +913,7 @@ class Component(component.Main):
                                             mult5_node + ".outputX")
 
             node.createPlusMinusAverage1D([mulNode.attr("outputX"),
-                                          mult6_node.attr("outputX")],
+                                           mult6_node.attr("outputX")],
                                           1,
                                           self.chain2bones[i + 1] + ".tx")
 

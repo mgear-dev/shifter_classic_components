@@ -337,7 +337,6 @@ class Component(component.Main):
             self.twister.append(twister)
             self.ref_twist.append(ref_twist)
 
-
         # Connections (Hooks) ------------------------------
         self.cnx0 = primitive.addTransform(self.root, self.getName("0_cnx"))
         self.cnx1 = primitive.addTransform(self.root, self.getName("1_cnx"))
@@ -394,11 +393,14 @@ class Component(component.Main):
 
         # Setup ------------------------------------------
         # Eval Fcurve
-        self.st_value = fcurve.getFCurveValues(
-            self.settings["st_profile"], self.settings["division"])
-
-        self.sq_value = fcurve.getFCurveValues(
-            self.settings["sq_profile"], self.settings["division"])
+        if self.guide.paramDefs["st_profile"].value:
+            self.st_value = self.guide.paramDefs["st_profile"].value
+            self.sq_value = self.guide.paramDefs["sq_profile"].value
+        else:
+            self.st_value = fcurve.getFCurveValues(self.settings["st_profile"],
+                                                   self.divisions)
+            self.sq_value = fcurve.getFCurveValues(self.settings["sq_profile"],
+                                                   self.divisions)
 
         self.st_att = [self.addSetupParam("stretch_%s" % i,
                                           "Stretch %s" % i,
