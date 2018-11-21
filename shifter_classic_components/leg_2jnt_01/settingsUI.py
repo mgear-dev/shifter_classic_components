@@ -1,12 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'C:/datawork/mgear_dev/mgear_dist/shifter_classic_components/shifter_classic_components/leg_2jnt_01/settingsUI.ui'
-#
-# Created: Tue Jun 19 18:16:17 2018
-#      by: pyside2-uic  running on PySide2 2.0.0~alpha0
-#
-# WARNING! All changes made in this file will be lost!
-
 import mgear.core.pyqt as gqt
 QtGui, QtCore, QtWidgets, wrapInstance = gqt.qt_import()
 
