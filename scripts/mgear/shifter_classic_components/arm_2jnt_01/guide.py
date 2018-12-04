@@ -96,7 +96,8 @@ class Guide(guide.ComponentGuide):
     def get_divisions(self):
         """ Returns correct segments divisions """
 
-        if self.root.supportJoints.get():
+        if (self.root.hasAttr("supportJoints")
+                and self.root.supportJoints.get()):
             ej = 2
         else:
             ej = 0
