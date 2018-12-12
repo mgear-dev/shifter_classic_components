@@ -41,7 +41,7 @@ class Ui_Form(object):
         self.ctlSize_doubleSpinBox.setAlignment(QtCore.Qt.AlignCenter)
         self.ctlSize_doubleSpinBox.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
         self.ctlSize_doubleSpinBox.setMinimum(0.01)
-        self.ctlSize_doubleSpinBox.setMaximum(200.0)
+        self.ctlSize_doubleSpinBox.setMaximum(20000.0)
         self.ctlSize_doubleSpinBox.setProperty("value", 1.0)
         self.ctlSize_doubleSpinBox.setObjectName("ctlSize_doubleSpinBox")
         self.horizontalLayout_3.addWidget(self.ctlSize_doubleSpinBox)
