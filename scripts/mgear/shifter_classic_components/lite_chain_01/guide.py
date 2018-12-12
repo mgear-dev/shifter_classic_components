@@ -16,7 +16,7 @@ import settingsUI as sui
 AUTHOR = "Miquel Campos"
 URL = "www.miquel-campos.com"
 EMAIL = "hello@miquel-campos.com"
-VERSION = [1, 0, 0]
+VERSION = [1, 1, 0]
 TYPE = "lite_chain_01"
 NAME = "chain"
 DESCRIPTION = "Super simple and light weight FK chain"
@@ -61,6 +61,7 @@ class Guide(guide.ComponentGuide):
 
         self.pNeutralPose = self.addParam("neutralpose", "bool", False)
         self.pOverrideNegate = self.addParam("overrideNegate", "bool", False)
+        self.pAddJoints = self.addParam("addJoints", "bool", True)
         self.pUseIndex = self.addParam("useIndex", "bool", False)
         self.pParentJointIndex = self.addParam(
             "parentJointIndex", "long", -1, None, None)
@@ -119,6 +120,8 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
                            "neutralpose")
         self.populateCheck(self.settingsTab.overrideNegate_checkBox,
                            "overrideNegate")
+        self.populateCheck(self.settingsTab.addJoints_checkBox,
+                           "addJoints")
 
     def create_componentLayout(self):
 
@@ -139,6 +142,11 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
             partial(self.updateCheck,
                     self.settingsTab.overrideNegate_checkBox,
                     "overrideNegate"))
+
+        self.settingsTab.addJoints_checkBox.stateChanged.connect(
+            partial(self.updateCheck,
+                    self.settingsTab.addJoints_checkBox,
+                    "addJoints"))
 
     def dockCloseEventTriggered(self):
         pyqt.deleteInstances(self, MayaQDockWidget)

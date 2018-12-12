@@ -79,8 +79,8 @@ class Component(component.Main):
             tOld = t
             self.previusTag = fk_ctl
             parent = fk_ctl
-
-            self.jnt_pos.append([fk_ctl, i, None, False])
+            if self.settings["addJoints"]:
+                self.jnt_pos.append([fk_ctl, i, None, False])
 
     # =====================================================
     # ATTRIBUTES

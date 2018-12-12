@@ -37,6 +37,16 @@
          </widget>
         </item>
         <item>
+         <widget class="QCheckBox" name="addJoints_checkBox">
+          <property name="text">
+           <string notr="true">Add Joints</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="verticalSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
