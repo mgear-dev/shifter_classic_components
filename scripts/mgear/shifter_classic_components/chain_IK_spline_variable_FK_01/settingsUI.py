@@ -1,0 +1,93 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'D:/repo/mgear_dist/framework/shifter_classic_components/scripts/mgear/shifter_classic_components/chain_IK_spline_variable_FK_01/settingsUI.ui'
+#
+# Created: Thu Dec 13 16:46:26 2018
+#      by: pyside2-uic  running on PySide2 2.0.0~alpha0
+#
+# WARNING! All changes made in this file will be lost!
+
+from PySide2 import QtCore, QtGui, QtWidgets
+
+class Ui_Form(object):
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(294, 292)
+        self.gridLayout = QtWidgets.QGridLayout(Form)
+        self.gridLayout.setObjectName("gridLayout")
+        self.groupBox_2 = QtWidgets.QGroupBox(Form)
+        self.groupBox_2.setObjectName("groupBox_2")
+        self.gridLayout_3 = QtWidgets.QGridLayout(self.groupBox_2)
+        self.gridLayout_3.setObjectName("gridLayout_3")
+        self.overrideJntNb_checkBox = QtWidgets.QCheckBox(self.groupBox_2)
+        self.overrideJntNb_checkBox.setText("Override Joints Number")
+        self.overrideJntNb_checkBox.setObjectName("overrideJntNb_checkBox")
+        self.gridLayout_3.addWidget(self.overrideJntNb_checkBox, 0, 0, 1, 1)
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.jntNb_label = QtWidgets.QLabel(self.groupBox_2)
+        self.jntNb_label.setObjectName("jntNb_label")
+        self.horizontalLayout.addWidget(self.jntNb_label)
+        self.jntNb_spinBox = QtWidgets.QSpinBox(self.groupBox_2)
+        self.jntNb_spinBox.setMinimum(1)
+        self.jntNb_spinBox.setMaximum(999)
+        self.jntNb_spinBox.setProperty("value", 3)
+        self.jntNb_spinBox.setObjectName("jntNb_spinBox")
+        self.horizontalLayout.addWidget(self.jntNb_spinBox)
+        self.gridLayout_3.addLayout(self.horizontalLayout, 1, 0, 1, 1)
+        self.gridLayout.addWidget(self.groupBox_2, 2, 0, 1, 1)
+        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout.addItem(spacerItem, 3, 0, 1, 1)
+        self.groupBox = QtWidgets.QGroupBox(Form)
+        self.groupBox.setTitle("")
+        self.groupBox.setObjectName("groupBox")
+        self.gridLayout_2 = QtWidgets.QGridLayout(self.groupBox)
+        self.gridLayout_2.setObjectName("gridLayout_2")
+        self.verticalLayout = QtWidgets.QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.neutralPose_checkBox = QtWidgets.QCheckBox(self.groupBox)
+        self.neutralPose_checkBox.setText("Neutral Pose")
+        self.neutralPose_checkBox.setObjectName("neutralPose_checkBox")
+        self.verticalLayout.addWidget(self.neutralPose_checkBox)
+        self.keepLength_checkBox = QtWidgets.QCheckBox(self.groupBox)
+        self.keepLength_checkBox.setText("Keep Length")
+        self.keepLength_checkBox.setObjectName("keepLength_checkBox")
+        self.verticalLayout.addWidget(self.keepLength_checkBox)
+        self.overrideNegate_checkBox = QtWidgets.QCheckBox(self.groupBox)
+        self.overrideNegate_checkBox.setText("Override Negate Axis Direction For \"R\" Side")
+        self.overrideNegate_checkBox.setObjectName("overrideNegate_checkBox")
+        self.verticalLayout.addWidget(self.overrideNegate_checkBox)
+        self.extraTweak_checkBox = QtWidgets.QCheckBox(self.groupBox)
+        self.extraTweak_checkBox.setText("Extra Tweaks")
+        self.extraTweak_checkBox.setObjectName("extraTweak_checkBox")
+        self.verticalLayout.addWidget(self.extraTweak_checkBox)
+        self.gridLayout_2.addLayout(self.verticalLayout, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.groupBox, 0, 0, 1, 1)
+        self.groupBox_3 = QtWidgets.QGroupBox(Form)
+        self.groupBox_3.setObjectName("groupBox_3")
+        self.gridLayout_4 = QtWidgets.QGridLayout(self.groupBox_3)
+        self.gridLayout_4.setObjectName("gridLayout_4")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.fkNb_label = QtWidgets.QLabel(self.groupBox_3)
+        self.fkNb_label.setObjectName("fkNb_label")
+        self.horizontalLayout_2.addWidget(self.fkNb_label)
+        self.fkNb_spinBox = QtWidgets.QSpinBox(self.groupBox_3)
+        self.fkNb_spinBox.setMinimum(1)
+        self.fkNb_spinBox.setMaximum(999)
+        self.fkNb_spinBox.setProperty("value", 3)
+        self.fkNb_spinBox.setObjectName("fkNb_spinBox")
+        self.horizontalLayout_2.addWidget(self.fkNb_spinBox)
+        self.gridLayout_4.addLayout(self.horizontalLayout_2, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.groupBox_3, 1, 0, 1, 1)
+
+        self.retranslateUi(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
+
+    def retranslateUi(self, Form):
+        Form.setWindowTitle(QtWidgets.QApplication.translate("Form", "Form", None, -1))
+        self.groupBox_2.setTitle(QtWidgets.QApplication.translate("Form", "Joint Options", None, -1))
+        self.jntNb_label.setText(QtWidgets.QApplication.translate("Form", "Joints Number", None, -1))
+        self.groupBox_3.setTitle(QtWidgets.QApplication.translate("Form", "FK Controls", None, -1))
+        self.fkNb_label.setText(QtWidgets.QApplication.translate("Form", "FK Ctl Number", None, -1))
+
