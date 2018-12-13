@@ -18,7 +18,7 @@ VERSION = [1, 0, 0]
 TYPE = "chain_FK_spline_variable_IK_01"
 NAME = "chain"
 DESCRIPTION = "FK chain with a spline driven joints. And variable number of \
-IK controls. \n FK is master, IK Slave"
+IK controls. \nFK is master, IK Slave"
 
 ##########################################################
 # CLASS
