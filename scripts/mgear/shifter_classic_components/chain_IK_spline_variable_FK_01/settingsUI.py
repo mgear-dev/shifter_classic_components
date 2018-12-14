@@ -1,13 +1,5 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'D:/repo/mgear_dist/framework/shifter_classic_components/scripts/mgear/shifter_classic_components/chain_IK_spline_variable_FK_01/settingsUI.ui'
-#
-# Created: Fri Dec 14 14:54:24 2018
-#      by: pyside2-uic  running on PySide2 2.0.0~alpha0
-#
-# WARNING! All changes made in this file will be lost!
-
-from PySide2 import QtCore, QtGui, QtWidgets
+import mgear.core.pyqt as gqt
+QtGui, QtCore, QtWidgets, wrapInstance = gqt.qt_import()
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -132,12 +124,12 @@ class Ui_Form(object):
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
-        Form.setWindowTitle(QtWidgets.QApplication.translate("Form", "Form", None, -1))
-        self.groupBox_3.setTitle(QtWidgets.QApplication.translate("Form", "FK Controls", None, -1))
-        self.fkNb_label.setText(QtWidgets.QApplication.translate("Form", "FK Ctl Number", None, -1))
-        self.softness_label.setText(QtWidgets.QApplication.translate("Form", "Softness", None, -1))
-        self.softness_label_2.setText(QtWidgets.QApplication.translate("Form", "Position", None, -1))
-        self.softness_label_3.setText(QtWidgets.QApplication.translate("Form", "Lock Orient", None, -1))
-        self.maxStretch_label.setText(QtWidgets.QApplication.translate("Form", "Max Stretch", None, -1))
-        self.maxSquash_label.setText(QtWidgets.QApplication.translate("Form", "Max Squash", None, -1))
+        Form.setWindowTitle(gqt.fakeTranslate("Form", "Form", None, -1))
+        self.groupBox_3.setTitle(gqt.fakeTranslate("Form", "FK Controls", None, -1))
+        self.fkNb_label.setText(gqt.fakeTranslate("Form", "FK Ctl Number", None, -1))
+        self.softness_label.setText(gqt.fakeTranslate("Form", "Softness", None, -1))
+        self.softness_label_2.setText(gqt.fakeTranslate("Form", "Position", None, -1))
+        self.softness_label_3.setText(gqt.fakeTranslate("Form", "Lock Orient", None, -1))
+        self.maxStretch_label.setText(gqt.fakeTranslate("Form", "Max Stretch", None, -1))
+        self.maxSquash_label.setText(gqt.fakeTranslate("Form", "Max Squash", None, -1))
 

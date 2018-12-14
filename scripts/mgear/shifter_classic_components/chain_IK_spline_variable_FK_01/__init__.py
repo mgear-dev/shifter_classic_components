@@ -3,8 +3,8 @@ from pymel.core import datatypes
 
 from mgear.shifter import component
 
-from mgear.core import transform, primitive, vector, curve, applyop
-from mgear.core import attribute, node, icon
+from mgear.core import transform, primitive, curve, applyop
+from mgear.core import attribute, node
 
 ##########################################################
 # COMPONENT
@@ -106,10 +106,6 @@ class Component(component.Main):
             self.div_cns.append(div_cns)
             parentdiv = div_cns
 
-            # Controlers (First and last one are fake)
-            # if i in [0]:
-            # TODO: add option setting to add or not the first and
-            #  last controller for the fk
             if i in [0, self.settings["fkNb"] - 1] and False:
                 fk_ctl = primitive.addTransform(
                     parentctl,
@@ -128,8 +124,6 @@ class Component(component.Main):
                     self.getName("fk%s_npo" % (i)),
                     t)
 
-                # self.dist = vector.getDistance(self.guide.apos[i],
-                #                                self.guide.apos[i + 1])
                 fk_ctl = self.addCtl(
                     fk_npo,
                     "fk%s_ctl" % (i),
@@ -180,13 +174,8 @@ class Component(component.Main):
             self.twister.append(twister)
             self.ref_twist.append(ref_twist)
 
-            # TODO: update this part with the optiona FK controls update
             for x in self.fk_ctl[:-1]:
                 attribute.setInvertMirror(x, ["tx", "rz", "ry"])
-
-        # Connections (Hooks) ------------------------------
-        self.cnx0 = primitive.addTransform(self.root, self.getName("0_cnx"))
-        self.cnx1 = primitive.addTransform(self.root, self.getName("1_cnx"))
 
     # =====================================================
     # ATTRIBUTES
@@ -246,8 +235,8 @@ class Component(component.Main):
             cns = applyop.pathCns(
                 self.div_cns[i], self.slv_crv, False, u, True)
 
-            cns.setAttr("frontAxis", 1)  # front axis is 'Y'
-            cns.setAttr("upAxis", 0)  # front axis is 'X'
+            cns.setAttr("frontAxis", 0)  # front axis is 'X'
+            cns.setAttr("upAxis", 2)  # front axis is 'Z'
 
             # Roll
             intMatrix = applyop.gear_intmatrix_op(
@@ -332,5 +321,23 @@ class Component(component.Main):
 
     def setRelation(self):
         """Set the relation beetween object from guide to rig"""
+        every_each = len(self.fk_ctl) / (len(self.ik_ctl) - 1)
 
-        return
+        self.relatives["root"] = self.fk_ctl[0]
+        self.controlRelatives["root"] = self.fk_ctl[0]
+        self.jointRelatives["root"] = 0
+        for i in range(0, len(self.ik_ctl) - 2):
+            self.relatives["%s_loc" % i] = self.fk_ctl[(i + 1) * every_each]
+            self.controlRelatives["%s_loc" % i] = self.fk_ctl[
+                (i + 1) * every_each]
+            self.jointRelatives["%s_loc" % i] = (i + 1) * every_each
+            self.aliasRelatives["%s_ctl" % i] = (i + 1) * every_each
+        self.relatives["%s_loc" % (len(self.ik_ctl) - 2)] = self.fk_ctl[-1]
+        print len(self.ik_ctl)
+        print self.fk_ctl[-1]
+        self.controlRelatives["%s_loc" % (
+            len(self.ik_ctl) - 2)] = self.fk_ctl[-1]
+        self.jointRelatives["%s_loc" % (
+            len(self.ik_ctl) - 2)] = len(self.fk_ctl) - 1
+        self.aliasRelatives["%s_loc" % (
+            len(self.ik_ctl) - 2)] = len(self.fk_ctl) - 1
