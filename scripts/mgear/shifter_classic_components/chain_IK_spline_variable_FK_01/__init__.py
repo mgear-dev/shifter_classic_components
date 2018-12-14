@@ -39,7 +39,7 @@ class Component(component.Main):
 
         # IK controls ---------------------------------------------
         self.ik_ctl = []
-        tOld = False
+        # tOld = False
         self.previusTag = self.parentCtlTag
         for i, t in enumerate(transform.getChainTransform2(self.guide.apos,
                                                            self.normal,
@@ -139,7 +139,8 @@ class Component(component.Main):
                     w=self.size * .1,
                     h=self.size * .1,
                     d=self.size * .1,
-                    tp=self.preiviousCtlTag)
+                    tp=self.preiviousCtlTag,
+                    mirrorConf=self.mirror_conf)
 
                 attribute.setKeyableAttributes(self.fk_ctl)
                 attribute.setRotOrder(fk_ctl, "ZXY")
@@ -212,7 +213,6 @@ class Component(component.Main):
         self.softness_att = self.addAnimParam(
             "softness", "Softness", "double", self.settings["softness"], 0, 1)
 
-
     # =====================================================
     # OPERATORS
     # =====================================================
@@ -271,7 +271,6 @@ class Component(component.Main):
                                           [rootWorld_node + ".outputScaleX",
                                            rootWorld_node + ".outputScaleY",
                                            rootWorld_node + ".outputScaleZ"])
-
 
             # Controlers
             if i == 0:

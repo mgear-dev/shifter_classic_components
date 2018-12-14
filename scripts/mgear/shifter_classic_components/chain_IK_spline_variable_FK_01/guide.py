@@ -61,15 +61,11 @@ class Guide(guide.ComponentGuide):
 
         self.pNeutralPose = self.addParam("neutralpose", "bool", False)
         self.pOverrideNegate = self.addParam("overrideNegate", "bool", False)
-        self.pKeepLength = self.addParam("keepLength", "bool", False)
-        self.pOverrideJointNb = self.addParam("overrideJntNb", "bool", False)
-        self.pfkNb = self.addParam("fkNb", "long", 3, 1)
-        self.pJntNb = self.addParam("jntNb", "long", 3, 1)
-        self.pExtraTweak = self.addParam("extraTweak", "bool", False)
+        self.pfkNb = self.addParam("fkNb", "long", 5, 1)
 
         self.pPosition = self.addParam("position", "double", 0, 0, 1)
-        self.pMaxStretch = self.addParam("maxstretch", "double", 1.5, 1)
-        self.pMaxSquash = self.addParam("maxsquash", "double", .5, 0, 1)
+        self.pMaxStretch = self.addParam("maxstretch", "double", 1, 1)
+        self.pMaxSquash = self.addParam("maxsquash", "double", 1, 0, 1)
         self.pSoftness = self.addParam("softness", "double", 0, 0, 1)
 
         self.pUseIndex = self.addParam("useIndex", "bool", False)
@@ -126,18 +122,23 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
         self.tabs.insertTab(1, self.settingsTab, "Component Settings")
 
         # populate component settings
-        self.populateCheck(self.settingsTab.neutralPose_checkBox,
-                           "neutralpose")
         self.populateCheck(self.settingsTab.overrideNegate_checkBox,
                            "overrideNegate")
-        self.populateCheck(self.settingsTab.keepLength_checkBox,
-                           "keepLength")
-        self.populateCheck(self.settingsTab.overrideJntNb_checkBox,
-                           "overrideJntNb")
-        self.populateCheck(self.settingsTab.extraTweak_checkBox,
-                           "extraTweak")
-        self.settingsTab.jntNb_spinBox.setValue(self.root.attr("jntNb").get())
-        self.settingsTab.fkNb_spinBox.setValue(self.root.attr("fkNb").get())
+
+        self.settingsTab.fkNb_spinBox.setValue(
+            self.root.attr("fkNb").get())
+        self.settingsTab.softness_slider.setValue(
+            int(self.root.attr("softness").get() * 100))
+        self.settingsTab.position_spinBox.setValue(
+            int(self.root.attr("position").get() * 100))
+        self.settingsTab.position_slider.setValue(
+            int(self.root.attr("position").get() * 100))
+        self.settingsTab.softness_spinBox.setValue(
+            int(self.root.attr("softness").get() * 100))
+        self.settingsTab.maxStretch_spinBox.setValue(
+            self.root.attr("maxstretch").get())
+        self.settingsTab.maxSquash_spinBox.setValue(
+            self.root.attr("maxsquash").get())
 
     def create_componentLayout(self):
 
@@ -149,40 +150,38 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
 
     def create_componentConnections(self):
 
-        self.settingsTab.neutralPose_checkBox.stateChanged.connect(
-            partial(self.updateCheck,
-                    self.settingsTab.neutralPose_checkBox,
-                    "neutralpose"))
-
         self.settingsTab.overrideNegate_checkBox.stateChanged.connect(
             partial(self.updateCheck,
                     self.settingsTab.overrideNegate_checkBox,
                     "overrideNegate"))
-
-        self.settingsTab.keepLength_checkBox.stateChanged.connect(
-            partial(self.updateCheck,
-                    self.settingsTab.keepLength_checkBox,
-                    "keepLength"))
-
-        self.settingsTab.overrideJntNb_checkBox.stateChanged.connect(
-            partial(self.updateCheck,
-                    self.settingsTab.overrideJntNb_checkBox,
-                    "overrideJntNb"))
-
-        self.settingsTab.jntNb_spinBox.valueChanged.connect(
-            partial(self.updateSpinBox,
-                    self.settingsTab.jntNb_spinBox,
-                    "jntNb"))
-
         self.settingsTab.fkNb_spinBox.valueChanged.connect(
             partial(self.updateSpinBox,
                     self.settingsTab.fkNb_spinBox,
                     "fkNb"))
-
-        self.settingsTab.extraTweak_checkBox.stateChanged.connect(
-            partial(self.updateCheck,
-                    self.settingsTab.extraTweak_checkBox,
-                    "extraTweak"))
+        self.settingsTab.softness_slider.valueChanged.connect(
+            partial(self.updateSlider,
+                    self.settingsTab.softness_slider,
+                    "softness"))
+        self.settingsTab.softness_spinBox.valueChanged.connect(
+            partial(self.updateSlider,
+                    self.settingsTab.softness_spinBox,
+                    "softness"))
+        self.settingsTab.position_slider.valueChanged.connect(
+            partial(self.updateSlider,
+                    self.settingsTab.position_slider,
+                    "position"))
+        self.settingsTab.position_spinBox.valueChanged.connect(
+            partial(self.updateSlider,
+                    self.settingsTab.position_spinBox,
+                    "position"))
+        self.settingsTab.maxStretch_spinBox.valueChanged.connect(
+            partial(self.updateSpinBox,
+                    self.settingsTab.maxStretch_spinBox,
+                    "maxstretch"))
+        self.settingsTab.maxSquash_spinBox.valueChanged.connect(
+            partial(self.updateSpinBox,
+                    self.settingsTab.maxSquash_spinBox,
+                    "maxsquash"))
 
     def dockCloseEventTriggered(self):
         pyqt.deleteInstances(self, MayaQDockWidget)
