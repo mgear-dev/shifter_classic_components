@@ -75,10 +75,10 @@ class Guide(guide.ComponentGuide):
 
         # FCurves
         self.pSt_profile = self.addFCurveParam(
-            "st_profile", [[0, 0], [.5, -1], [1, 0]])
+            "st_profile", [[0, 0], [.5, -.5], [1, 0]])
 
         self.pSq_profile = self.addFCurveParam(
-            "sq_profile", [[0, 0], [.5, 1], [1, 0]])
+            "sq_profile", [[0, 0], [.5, .5], [1, 0]])
 
         self.pUseIndex = self.addParam("useIndex", "bool", False)
 

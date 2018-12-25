@@ -793,13 +793,13 @@ class Component(component.Main):
                         (i - self.settings["div0"] - 1.0) * .5 / \
                         (self.settings["div1"] + 1.0)
 
-            perc = max(.0001, min(.990, perc))
+            perc = max(.001, min(.990, perc))
 
             # Roll
             if self.negate:
                 o_node = applyop.gear_rollsplinekine_op(
                     div_cns, [self.tws2_rot, self.tws1_rot, self.tws0_rot],
-                    1 - perc, 40)
+                    1.0 - perc, 40)
             else:
                 o_node = applyop.gear_rollsplinekine_op(
                     div_cns, [self.tws0_rot, self.tws1_rot, self.tws2_rot],
