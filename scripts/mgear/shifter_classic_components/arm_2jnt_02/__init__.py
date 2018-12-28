@@ -125,6 +125,40 @@ class Component(component.Main):
             attribute.setInvertMirror(x, ["tx", "ty", "tz"])
 
         # IK upv ---------------------------------
+
+        # create tip point
+        self.tip_ref = primitive.addTransform(
+            self.armChainUpvRef[0],
+            self.getName("tip_ref"),
+            self.armChainUpvRef[0].getMatrix(worldSpace=True))
+
+        # create interpolate obj
+        self.interpolate_lvl = primitive.addTransform(
+            self.armChainUpvRef[0],
+            self.getName("int_lvl"),
+            self.armChainUpvRef[0].getMatrix(worldSpace=True))
+
+        # create roll npo and ctl
+        self.roll_ctl_npo = primitive.addTransform(
+            self.root,
+            self.getName("roll_ctl_npo"),
+            self.armChainUpvRef[0].getMatrix(worldSpace=True))
+        if self.negate:
+            off_x = -1.5708
+        else:
+            off_x = 1.5708
+        off_y = 1.5708
+
+        self.roll_ctl = self.addCtl(self.roll_ctl_npo,
+                                    "roll_ctl",
+                                    transform.getTransform(self.roll_ctl_npo),
+                                    self.color_ik,
+                                    "compas",
+                                    w=self.size * .3,
+                                    ro=datatypes.Vector([off_x, off_y, 0]),
+                                    tp=self.parentCtlTag)
+        attribute.setKeyableAttributes(self.roll_ctl, ["rx"])
+        # create upv control
         v = self.guide.apos[2] - self.guide.apos[0]
         v = self.normal ^ v
         v.normalize()
@@ -135,13 +169,14 @@ class Component(component.Main):
                                                      self.getName("upv_cns"),
                                                      v)
 
-        self.upv_ctl = self.addCtl(self.upv_cns,
-                                   "upv_ctl",
-                                   transform.getTransform(self.upv_cns),
-                                   self.color_ik,
-                                   "diamond",
-                                   w=self.size * .12,
-                                   tp=self.parentCtlTag)
+        self.upv_ctl = self.addCtl(
+            self.upv_cns,
+            "upv_ctl",
+            transform.getTransform(self.upv_cns),
+            self.color_ik,
+            "diamond",
+            w=self.size * .12,
+            tp=self.parentCtlTag)
 
         if self.settings["mirrorMid"]:
             if self.negate:
@@ -188,7 +223,7 @@ class Component(component.Main):
                                   w=self.size * .12,
                                   h=self.size * .12,
                                   d=self.size * .12,
-                                  tp=self.upv_ctl)
+                                  tp=self.roll_ctl)
 
         if self.settings["mirrorIK"]:
             if self.negate:
@@ -612,9 +647,9 @@ class Component(component.Main):
             "ikSCsolver")
         pm.pointConstraint(self.ik_ctl,
                            self.ikHandleUpvRef)
-        pm.parentConstraint(self.armChainUpvRef[0],
-                            self.upv_cns,
-                            mo=True)
+        # pm.parentConstraint(self.armChainUpvRef[0],
+        #                     self.upv_cns,
+        #                     mo=True)
 
         # Visibilities -------------------------------------
         # fk
@@ -639,6 +674,8 @@ class Component(component.Main):
         if self.settings["ikTR"]:
             for shp in self.ikRot_ctl.getShapes():
                 pm.connectAttr(self.blend_att, shp.attr("visibility"))
+        for shp in self.roll_ctl.getShapes():
+            pm.connectAttr(self.blend_att, shp.attr("visibility"))
 
         # Controls ROT order -----------------------------------
         attribute.setRotOrder(self.fk0_ctl, "XZY")
@@ -658,6 +695,37 @@ class Component(component.Main):
                                            self.length0,
                                            self.length1,
                                            self.negate)
+
+        # NOTE: Ideally we should not change hierarchy or move object after
+        # object generation method. But is much easier this way since every
+        # part is in the final and correct position
+        # after the  ctrn_loc is in the correct position with the ikfk2bone op
+
+        # point constrain tip reference
+        pm.pointConstraint(self.ik_ctl, self.tip_ref, mo=False)
+
+        # interpolate transform  mid point locator
+        int_matrix = applyop.gear_intmatrix_op(
+            self.armChainUpvRef[0].attr("worldMatrix"),
+            self.tip_ref.attr("worldMatrix"),
+            .5)
+        applyop.gear_mulmatrix_op(
+            int_matrix.attr("output"),
+            self.interpolate_lvl.attr("parentInverseMatrix[0]"),
+            self.interpolate_lvl)
+
+        # match roll ctl npo to ctrn_loc current transform (so correct orient)
+        transform.matchWorldTransform(self.ctrn_loc, self.roll_ctl_npo)
+
+        # match roll ctl npo to interpolate transform current position
+        pos = self.interpolate_lvl.getTranslation(space="world")
+        self.roll_ctl_npo.setTranslation(pos, space="world")
+
+        # parent constraint roll control npo to interpolate trans
+        pm.parentConstraint(self.interpolate_lvl, self.roll_ctl_npo, mo=True)
+
+        # we change the final hierarchy for the roll ctl
+        pm.parent(self.upv_cns, self.roll_ctl)
 
         if self.settings["ikTR"]:
             # connect the control inputs
