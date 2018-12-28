@@ -647,9 +647,6 @@ class Component(component.Main):
             "ikSCsolver")
         pm.pointConstraint(self.ik_ctl,
                            self.ikHandleUpvRef)
-        # pm.parentConstraint(self.armChainUpvRef[0],
-        #                     self.upv_cns,
-        #                     mo=True)
 
         # Visibilities -------------------------------------
         # fk
@@ -726,6 +723,12 @@ class Component(component.Main):
 
         # we change the final hierarchy for the roll ctl
         pm.parent(self.upv_cns, self.roll_ctl)
+
+        # get ready for space switch
+        if self.settings["upvrefarray"]:
+            pm.parentConstraint(self.roll_ctl,
+                                self.upv_cns,
+                                mo=True)
 
         if self.settings["ikTR"]:
             # connect the control inputs
