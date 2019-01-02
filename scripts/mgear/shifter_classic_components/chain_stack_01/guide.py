@@ -216,7 +216,8 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
                 master_len = self._get_chain_segments_length(oSel[0])
 
                 if master_len >= self_len:
-                    lEdit.setText(oSel[0].name())
+                    comp_name = oSel[0].name().replace("_root", "")
+                    lEdit.setText(comp_name)
                     self.root.attr(targetAttr).set(lEdit.text())
                 else:
                     pm.displayWarning(

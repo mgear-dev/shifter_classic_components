@@ -42,6 +42,11 @@ class Component(component.Main):
 
         # FK controllers ------------------------------------
         self.fk_npo = []
+        self.fk_global_in = []
+        self.fk_local_in = []
+        self.fk_local_out = []
+        self.fk_global_out = []
+        self.fk_global_ref = []
         self.fk_ctl = []
         self.tweak_ctl = []
         self.upv_curv_lvl = []
@@ -63,8 +68,44 @@ class Component(component.Main):
                     tOld,
                     transform.getPositionFromMatrix(t))
 
+            # global input
+            global_t = transform.setMatrixPosition(
+                datatypes.Matrix(),
+                transform.getPositionFromMatrix(t))
+            fk_global_npo = primitive.addTransform(
+                parent, self.getName("fk%s_global_npo" % i), global_t)
+            fk_global_in = primitive.addTransform(
+                fk_global_npo, self.getName("fk%s_global_in" % i), global_t)
+            self.fk_global_in.append(fk_global_in)
+
+            # local input
+            fk_local_npo = primitive.addTransform(
+                fk_global_in, self.getName("fk%s_local_npo" % i), tnpo)
+            fk_local_in = primitive.addTransform(
+                fk_local_npo, self.getName("fk%s_local_in" % i), tnpo)
+            self.fk_local_in.append(fk_local_in)
+
+            # output
+            fk_global_out_npo = primitive.addTransform(
+                parent, self.getName("fk%s_global_out_npo" % i), global_t)
+            fk_global_out = primitive.addTransform(
+                fk_global_out_npo,
+                self.getName("fk%s_global_out" % i),
+                global_t)
+            self.fk_global_out.append(fk_global_out)
+
+            fk_local_out_npo = primitive.addTransform(
+                parent, self.getName("fk%s_local_out_npo" % i), tnpo)
+            fk_local_out = primitive.addTransform(
+                fk_local_out_npo, self.getName("fk%s_local_out" % i), tnpo)
+            self.fk_local_out.append(fk_local_out)
+
+            # fk npo
             fk_npo = primitive.addTransform(
-                parent, self.getName("fk%s_npo" % i), tnpo)
+                fk_local_in, self.getName("fk%s_npo" % i), tnpo)
+            self.fk_npo.append(fk_npo)
+
+            # ctl
             fk_ctl = self.addCtl(
                 fk_npo,
                 "fk%s_ctl" % i,
@@ -77,6 +118,14 @@ class Component(component.Main):
                 po=datatypes.Vector(self.dist * .5 * self.n_factor, 0, 0),
                 tp=self.previusTag,
                 mirrorConf=self.mirror_conf)
+
+            # fk global ref
+            fk_global_ref = primitive.addTransform(
+                fk_ctl,
+                self.getName("fk%s_global_ref" % i),
+                global_t)
+            self.fk_global_ref.append(fk_global_ref)
+            attribute.setKeyableAttributes(fk_global_ref, [])
 
             tweak_ctl = self.addCtl(
                 fk_ctl,
@@ -95,15 +144,12 @@ class Component(component.Main):
                 tweak_ctl, self.getName("upv%s_lvl" % i), t)
             upv_curv_lvl.attr("tz").set(.01)
 
-            self.fk_npo.append(fk_npo)
             self.fk_ctl.append(fk_ctl)
             self.tweak_ctl.append(tweak_ctl)
             self.upv_curv_lvl.append(upv_curv_lvl)
             tOld = t
             self.previusTag = fk_ctl
             parent = fk_ctl
-
-
 
         # add end control
         tweak_npo = primitive.addTransform(
@@ -329,13 +375,43 @@ class Component(component.Main):
             # connect vis line ref
             for shp in self.line_ref.getShapes():
                 pm.connectAttr(self.ikVis_att, shp.attr("visibility"))
+        # master components
+        mstr_global = self.settings["masterChainGlobal"]
+        mstr_local = self.settings["masterChainLocal"]
+        if mstr_global:
+            mstr_global = self.rig.components[mstr_global]
+        if mstr_local:
+            mstr_local = self.rig.components[mstr_local]
+        # connect the fk chain ctls
+        for e, ctl in enumerate(self.fk_ctl):
+            # connect out
+            out_loc = self.fk_local_out[e]
+            applyop.gear_mulmatrix_op(ctl.attr("worldMatrix"),
+                                      out_loc.attr("parentInverseMatrix[0]"),
+                                      out_loc)
+            out_glob = self.fk_global_out[e]
+            out_ref = self.fk_global_ref[e]
+            applyop.gear_mulmatrix_op(out_ref.attr("worldMatrix"),
+                                      out_glob.attr("parentInverseMatrix[0]"),
+                                      out_glob)
+            # connect in global
+            if mstr_global:
+                mstr_out = mstr_global.fk_global_out[e]
+                glob_in = self.fk_global_in[e]
+                for srt in ["scale", "rotate", "translate"]:
+                    pm.connectAttr(mstr_out.attr(srt), glob_in.attr(srt))
+            # connect in local
+            if mstr_local:
+                mstr_out = mstr_local.fk_local_out[e]
+                local_in = self.fk_local_in[e]
+                for srt in ["scale", "rotate", "translate"]:
+                    pm.connectAttr(mstr_out.attr(srt), local_in.attr(srt))
+            for shp in ctl.getShapes():
+                pm.connectAttr(self.fkVis_att, shp.attr("visibility"))
 
         for ctl in self.tweak_ctl:
             for shp in ctl.getShapes():
                 pm.connectAttr(self.ikVis_att, shp.attr("visibility"))
-        for ctl in self.fk_ctl:
-            for shp in ctl.getShapes():
-                pm.connectAttr(self.fkVis_att, shp.attr("visibility"))
 
         if self.settings["extraTweak"]:
             for tweak_ctl in self.extratweak_ctl:
