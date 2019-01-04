@@ -1,13 +1,5 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'C:/datawork/mgear_dev/mgear_dist/framework/shifter_classic_components/scripts/mgear/shifter_classic_components/chain_stack_01/settingsUI.ui'
-#
-# Created: Wed Jan  2 19:15:40 2019
-#      by: pyside2-uic  running on PySide2 2.0.0~alpha0
-#
-# WARNING! All changes made in this file will be lost!
-
-from PySide2 import QtCore, QtGui, QtWidgets
+import mgear.core.pyqt as gqt
+QtGui, QtCore, QtWidgets, wrapInstance = gqt.qt_import()
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -105,12 +97,12 @@ class Ui_Form(object):
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
-        Form.setWindowTitle(QtWidgets.QApplication.translate("Form", "Form", None, -1))
-        self.groupBox_2.setTitle(QtWidgets.QApplication.translate("Form", "Joint Options", None, -1))
-        self.jntNb_label.setText(QtWidgets.QApplication.translate("Form", "Joints Number", None, -1))
-        self.groupBox_3.setTitle(QtWidgets.QApplication.translate("Form", "Chain Master", None, -1))
-        self.label.setText(QtWidgets.QApplication.translate("Form", "Local:", None, -1))
-        self.masterLocal_pushButton.setText(QtWidgets.QApplication.translate("Form", "<<", None, -1))
-        self.label_3.setText(QtWidgets.QApplication.translate("Form", "Global:", None, -1))
-        self.masterGlobal_pushButton.setText(QtWidgets.QApplication.translate("Form", "<<", None, -1))
+        Form.setWindowTitle(gqt.fakeTranslate("Form", "Form", None, -1))
+        self.groupBox_2.setTitle(gqt.fakeTranslate("Form", "Joint Options", None, -1))
+        self.jntNb_label.setText(gqt.fakeTranslate("Form", "Joints Number", None, -1))
+        self.groupBox_3.setTitle(gqt.fakeTranslate("Form", "Chain Master", None, -1))
+        self.label.setText(gqt.fakeTranslate("Form", "Local:", None, -1))
+        self.masterLocal_pushButton.setText(gqt.fakeTranslate("Form", "<<", None, -1))
+        self.label_3.setText(gqt.fakeTranslate("Form", "Global:", None, -1))
+        self.masterGlobal_pushButton.setText(gqt.fakeTranslate("Form", "<<", None, -1))
 

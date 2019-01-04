@@ -20,7 +20,7 @@ VERSION = [1, 0, 0]
 TYPE = "chain_stack_01"
 NAME = "chain"
 DESCRIPTION = "Stackable chain with special connector to drive many chains" \
-    "from one master chain. Initial design for Anime Style hair" \
+    " from one master chain. Initially designed for Anime Style hair" \
     ", but can be used for any purpose. \n" \
     "This component is base in 'chain_FK_spline_02'"
 
@@ -206,30 +206,33 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
         oType = pm.nodetypes.Transform
 
         oSel = pm.selected()
-        compatible = [TYPE, "lite_chain_01"]
+        compatible = [TYPE]
         if oSel:
-            if (isinstance(oSel[0], oType)
-                    and oSel[0].hasAttr("comp_type")
-                    and oSel[0].attr("comp_type").get() in compatible):
-                # check master chain FK segments
-                self_len = self._get_chain_segments_length(self.root)
-                master_len = self._get_chain_segments_length(oSel[0])
-
-                if master_len >= self_len:
-                    comp_name = oSel[0].name().replace("_root", "")
-                    lEdit.setText(comp_name)
-                    self.root.attr(targetAttr).set(lEdit.text())
-                else:
-                    pm.displayWarning(
-                        "Invalid Master: {} ".format(oSel[0]) +
-                        "Current chain has: {} sections".format(self_len) +
-                        " But Master chain has" +
-                        " less sections: {}".format(str(master_len)))
+            if oSel[0] == self.root:
+                pm.displayWarning("Self root can not be Master. Cycle Warning")
             else:
-                pm.displayWarning("The selected element is not a "
-                                  "chain root or compatible chain")
-                pm.displayWarning("Complatible chain componentes"
-                                  " are: {}".format(str(compatible)))
+                if (isinstance(oSel[0], oType)
+                        and oSel[0].hasAttr("comp_type")
+                        and oSel[0].attr("comp_type").get() in compatible):
+                    # check master chain FK segments
+                    self_len = self._get_chain_segments_length(self.root)
+                    master_len = self._get_chain_segments_length(oSel[0])
+
+                    if master_len >= self_len:
+                        comp_name = oSel[0].name().replace("_root", "")
+                        lEdit.setText(comp_name)
+                        self.root.attr(targetAttr).set(lEdit.text())
+                    else:
+                        pm.displayWarning(
+                            "Invalid Master: {} ".format(oSel[0]) +
+                            "Current chain has: {} sections".format(self_len) +
+                            " But Master chain has" +
+                            " less sections: {}".format(str(master_len)))
+                else:
+                    pm.displayWarning("The selected element is not a "
+                                      "chain root or compatible chain")
+                    pm.displayWarning("Complatible chain componentes"
+                                      " are: {}".format(str(compatible)))
         else:
             pm.displayWarning("Nothing selected.")
             if lEdit.text():
