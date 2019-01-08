@@ -647,6 +647,9 @@ class Component(component.Main):
             "ikSCsolver")
         pm.pointConstraint(self.ik_ctl,
                            self.ikHandleUpvRef)
+        pm.parentConstraint(self.armChainUpvRef[0],
+                            self.upv_cns,
+                            mo=True)
 
         # Visibilities -------------------------------------
         # fk
@@ -721,15 +724,6 @@ class Component(component.Main):
         # parent constraint roll control npo to interpolate trans
         pm.parentConstraint(self.interpolate_lvl, self.roll_ctl_npo, mo=True)
 
-        # we change the final hierarchy for the roll ctl
-        pm.parent(self.upv_cns, self.roll_ctl)
-
-        # get ready for space switch
-        if self.settings["upvrefarray"]:
-            pm.parentConstraint(self.roll_ctl,
-                                self.upv_cns,
-                                mo=True)
-
         if self.settings["ikTR"]:
             # connect the control inputs
             outEff_dm = o_node.listConnections(c=True)[-1][1]
@@ -766,9 +760,18 @@ class Component(component.Main):
         pm.connectAttr(self.blend_att, o_node + ".blend")
         if self.negate:
             mulVal = -1
+            rollMulVal = 1
         else:
             mulVal = 1
-        node.createMulNode(self.roll_att, mulVal, o_node + ".roll")
+            rollMulVal = -1
+        roll_m_node = node.createMulNode(self.roll_att,
+                                         mulVal)
+        roll_m_node2 = node.createMulNode(self.roll_ctl.attr("rx"),
+                                          rollMulVal)
+        node.createPlusMinusAverage1D(
+            [roll_m_node.outputX, roll_m_node2.outputX],
+            operation=1,
+            output=o_node + ".roll")
         pm.connectAttr(self.scale_att, o_node + ".scaleA")
         pm.connectAttr(self.scale_att, o_node + ".scaleB")
         pm.connectAttr(self.maxstretch_att, o_node + ".maxstretch")
