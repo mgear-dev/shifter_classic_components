@@ -62,8 +62,7 @@ class Component(component.Main):
             parentctl = fk_ctl
 
             blend_val = blend_val + blend_increment
-            print blend_val
-            print int_t
+
             int_t = transform.getInterpolateTransformMatrix(
                 t, t2, blend=blend_val)
 
@@ -75,7 +74,7 @@ class Component(component.Main):
         # Ik Controlers ------------------------------------
 
         self.ik0_npo = primitive.addTransform(
-            self.root, self.getName("ik0_npo"), t)
+            self.fk_ctl[0], self.getName("ik0_npo"), t)
         self.ik0_ctl = self.addCtl(self.ik0_npo,
                                    "ik0_ctl",
                                    t,
@@ -450,18 +449,11 @@ class Component(component.Main):
             pm.connectAttr(self.ref_twist[i] + ".translate",
                            cns + ".worldUpVector")
 
-            # compensate scale reference
-            div_node = node.createDivNode([1, 1, 1],
-                                          [rootWorld_node + ".outputScaleX",
-                                           rootWorld_node + ".outputScaleY",
-                                           rootWorld_node + ".outputScaleZ"])
-
             # Squash n Stretch
             op = applyop.gear_squashstretch2_op(self.scl_transforms[i],
                                                 self.root,
                                                 pm.arclen(self.slv_crv),
-                                                "y",
-                                                div_node + ".output")
+                                                "y")
 
             pm.connectAttr(self.volume_att, op + ".blend")
             pm.connectAttr(crv_node + ".arcLength", op + ".driver")
@@ -481,8 +473,8 @@ class Component(component.Main):
         self.relatives["root"] = self.cnx0
         self.relatives["eff"] = self.cnx1
 
-        # self.controlRelatives["root"] = self.fk_ctl[0]
-        # self.controlRelatives["eff"] = self.fk_ctl[-2]
+        self.controlRelatives["root"] = self.fk_ctl[0]
+        self.controlRelatives["eff"] = self.fk_ctl[-1]
 
         self.jointRelatives["root"] = 0
         self.jointRelatives["eff"] = -1
