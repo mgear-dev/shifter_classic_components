@@ -333,8 +333,6 @@ class Component(component.Main):
             self.jointRelatives["%s_loc" % i] = (i + 1) * every_each
             self.aliasRelatives["%s_ctl" % i] = (i + 1) * every_each
         self.relatives["%s_loc" % (len(self.ik_ctl) - 2)] = self.fk_ctl[-1]
-        print len(self.ik_ctl)
-        print self.fk_ctl[-1]
         self.controlRelatives["%s_loc" % (
             len(self.ik_ctl) - 2)] = self.fk_ctl[-1]
         self.jointRelatives["%s_loc" % (
