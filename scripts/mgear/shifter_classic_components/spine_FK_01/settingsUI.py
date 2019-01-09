@@ -1,13 +1,5 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'C:/datawork/mgear_dev/mgear_dist/framework/shifter_classic_components/scripts/mgear/shifter_classic_components/spine_FK_01/settingsUI.ui'
-#
-# Created: Wed Jan  9 23:12:51 2019
-#      by: pyside2-uic  running on PySide2 2.0.0~alpha0
-#
-# WARNING! All changes made in this file will be lost!
-
-from PySide2 import QtCore, QtGui, QtWidgets
+import mgear.core.pyqt as gqt
+QtGui, QtCore, QtWidgets, wrapInstance = gqt.qt_import()
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -134,12 +126,12 @@ class Ui_Form(object):
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
-        Form.setWindowTitle(QtWidgets.QApplication.translate("Form", "Form", None, -1))
-        self.softness_label.setText(QtWidgets.QApplication.translate("Form", "Softness", None, -1))
-        self.softness_label_2.setText(QtWidgets.QApplication.translate("Form", "Position", None, -1))
-        self.maxStretch_label.setText(QtWidgets.QApplication.translate("Form", "Max Stretch", None, -1))
-        self.maxSquash_label.setText(QtWidgets.QApplication.translate("Form", "Max Squash", None, -1))
-        self.divisions_label.setText(QtWidgets.QApplication.translate("Form", "Divisions", None, -1))
-        self.centralTangent_label.setText(QtWidgets.QApplication.translate("Form", "Central Tangent", None, -1))
-        self.squashStretchProfile_pushButton.setText(QtWidgets.QApplication.translate("Form", "Squash and Stretch Profile", None, -1))
+        Form.setWindowTitle(gqt.fakeTranslate("Form", "Form", None, -1))
+        self.softness_label.setText(gqt.fakeTranslate("Form", "Softness", None, -1))
+        self.softness_label_2.setText(gqt.fakeTranslate("Form", "Position", None, -1))
+        self.maxStretch_label.setText(gqt.fakeTranslate("Form", "Max Stretch", None, -1))
+        self.maxSquash_label.setText(gqt.fakeTranslate("Form", "Max Squash", None, -1))
+        self.divisions_label.setText(gqt.fakeTranslate("Form", "Divisions", None, -1))
+        self.centralTangent_label.setText(gqt.fakeTranslate("Form", "Central Tangent", None, -1))
+        self.squashStretchProfile_pushButton.setText(gqt.fakeTranslate("Form", "Squash and Stretch Profile", None, -1))
 
