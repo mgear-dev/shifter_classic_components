@@ -20,14 +20,59 @@ class Component(component.Main):
     def addObjects(self):
         """Add all the objects needed to create the component."""
 
-
-        # Ik Controlers ------------------------------------
         t = transform.getTransformLookingAt(
             self.guide.apos[0],
             self.guide.apos[1],
             self.guide.blades["blade"].z * -1,
             "yx",
             self.negate)
+
+        t2 = transform.setMatrixPosition(t, self.guide.apos[1])
+
+        int_t = t
+        self.preiviousCtlTag = self.parentCtlTag
+
+        # FK Controlers ------------------------------------
+        self.fk_ctl = []
+        self.fk_npo = []
+        parentctl = self.root
+        blend_increment = 1.0 / (self.settings["division"] -1)
+        blend_val = 0.0
+        for i in range(self.settings["division"]):
+            fk_npo = primitive.addTransform(
+                parentctl,
+                self.getName("fk%s_npo" % (i)),
+                int_t)
+
+            self.fk_npo.append(fk_npo)
+
+            fk_ctl = self.addCtl(fk_npo,
+                                 "fk%s_ctl" % (i),
+                                 int_t,
+                                 self.color_fk,
+                                 "cube",
+                                 w=self.size,
+                                 h=self.size * .05,
+                                 d=self.size,
+                                 tp=self.preiviousCtlTag)
+
+            self.fk_ctl.append(fk_ctl)
+            self.preiviousCtlTag = fk_ctl
+
+            parentctl = fk_ctl
+
+            blend_val = blend_val + blend_increment
+            print blend_val
+            print int_t
+            int_t = transform.getInterpolateTransformMatrix(
+                t, t2, blend=blend_val)
+
+        for x in self.fk_ctl:
+            attribute.setKeyableAttributes(x)
+            attribute.setRotOrder(x, "ZXY")
+            attribute.setInvertMirror(x, ["tx", "rz", "ry"])
+
+        # Ik Controlers ------------------------------------
 
         self.ik0_npo = primitive.addTransform(
             self.root, self.getName("ik0_npo"), t)
@@ -43,57 +88,17 @@ class Component(component.Main):
         attribute.setRotOrder(self.ik0_ctl, "ZXY")
         attribute.setInvertMirror(self.ik0_ctl, ["tx", "ry", "rz"])
 
-        # hip base joint
-        # TODO: add option in setting for on/off
-        if True:
-            self.hip_lvl = primitive.addTransform(
-                self.ik0_ctl, self.getName("hip_lvl"), t)
-            self.jnt_pos.append([self.hip_lvl, "hip"])
-
         t = transform.setMatrixPosition(t, self.guide.apos[1])
-        if self.settings["autoBend"]:
-            self.autoBend_npo = primitive.addTransform(
-                self.root, self.getName("spinePosition_npo"), t)
+        self.ik1_npo = primitive.addTransform(
+            self.fk_ctl[-1], self.getName("ik1_npo"), t)
 
-            self.autoBend_ctl = self.addCtl(self.autoBend_npo,
-                                            "spinePosition_ctl",
-                                            t,
-                                            self.color_ik,
-                                            "square",
-                                            w=self.size,
-                                            d=.3 * self.size,
-                                            tp=self.parentCtlTag)
-
-            attribute.setKeyableAttributes(self.autoBend_ctl,
-                                           ["tx", "ty", "tz", "ry"])
-
-            attribute.setInvertMirror(self.autoBend_ctl, ["tx", "ry"])
-
-            self.ik1_npo = primitive.addTransform(
-                self.autoBendChain[0], self.getName("ik1_npo"), t)
-
-            self.ik1autoRot_lvl = primitive.addTransform(
-                self.ik1_npo, self.getName("ik1autoRot_lvl"), t)
-
-            self.ik1_ctl = self.addCtl(self.ik1autoRot_lvl,
-                                       "ik1_ctl",
-                                       t,
-                                       self.color_ik,
-                                       "compas",
-                                       w=self.size,
-                                       tp=self.autoBend_ctl)
-        else:
-            t = transform.setMatrixPosition(t, self.guide.apos[1])
-            self.ik1_npo = primitive.addTransform(
-                self.root, self.getName("ik1_npo"), t)
-
-            self.ik1_ctl = self.addCtl(self.ik1_npo,
-                                       "ik1_ctl",
-                                       t,
-                                       self.color_ik,
-                                       "compas",
-                                       w=self.size,
-                                       tp=self.ik0_ctl)
+        self.ik1_ctl = self.addCtl(self.ik1_npo,
+                                   "ik1_ctl",
+                                   t,
+                                   self.color_ik,
+                                   "compas",
+                                   w=self.size,
+                                   tp=self.ik0_ctl)
 
         attribute.setKeyableAttributes(self.ik1_ctl, self.tr_params)
         attribute.setRotOrder(self.ik1_ctl, "ZXY")
@@ -224,8 +229,6 @@ class Component(component.Main):
         parentdiv = self.root
         parentctl = self.root
         self.div_cns = []
-        self.fk_ctl = []
-        self.fk_npo = []
         self.scl_transforms = []
         self.twister = []
         self.ref_twist = []
@@ -253,46 +256,7 @@ class Component(component.Main):
             self.div_cns.append(div_cns)
             parentdiv = div_cns
 
-            # Controlers (First and last one are fake)
-            # if i in [0]:
-            # TODO: add option setting to add or not the first and
-            #  last controller for the fk
-            if i in [0, self.settings["division"] - 1] and False:
-                # if i in [0, self.settings["division"] - 1]:
-                fk_ctl = primitive.addTransform(
-                    parentctl,
-                    self.getName("%s_loc" % i),
-                    transform.getTransform(parentctl))
-
-                fk_npo = fk_ctl
-                if i in [self.settings["division"] - 1]:
-                    self.fk_ctl.append(fk_ctl)
-            else:
-                fk_npo = primitive.addTransform(
-                    parentctl,
-                    self.getName("fk%s_npo" % (i)),
-                    transform.getTransform(parentctl))
-
-                fk_ctl = self.addCtl(fk_npo,
-                                     "fk%s_ctl" % (i),
-                                     transform.getTransform(parentctl),
-                                     self.color_fk,
-                                     "cube",
-                                     w=self.size,
-                                     h=self.size * .05,
-                                     d=self.size,
-                                     tp=self.preiviousCtlTag)
-
-                self.fk_ctl.append(fk_ctl)
-                self.preiviousCtlTag = fk_ctl
-
-            for x in self.fk_ctl:
-                attribute.setKeyableAttributes(x)
-                attribute.setRotOrder(x, "ZXY")
-                attribute.setInvertMirror(x, ["tx", "rz", "ry"])
-
-            self.fk_npo.append(fk_npo)
-            parentctl = fk_ctl
+            parentctl = div_cns
             scl_ref = primitive.addTransform(parentctl,
                                              self.getName("%s_scl_ref" % i),
                                              transform.getTransform(parentctl))
@@ -349,33 +313,12 @@ class Component(component.Main):
         self.softness_att = self.addAnimParam(
             "softness", "Softness", "double", self.settings["softness"], 0, 1)
 
-        self.lock_ori0_att = self.addAnimParam("lock_ori0",
-                                               "Lock Ori 0",
-                                               "double",
-                                               self.settings["lock_ori"],
-                                               0,
-                                               1)
-
-        self.lock_ori1_att = self.addAnimParam("lock_ori1",
-                                               "Lock Ori 1",
-                                               "double",
-                                               self.settings["lock_ori"],
-                                               0,
-                                               1)
-
         self.tan0_att = self.addAnimParam("tan0", "Tangent 0", "double", 1, 0)
         self.tan1_att = self.addAnimParam("tan1", "Tangent 1", "double", 1, 0)
 
         # Volume
         self.volume_att = self.addAnimParam(
             "volume", "Volume", "double", 1, 0, 1)
-
-        if self.settings["autoBend"]:
-            self.sideBend_att = self.addAnimParam(
-                "sideBend", "Side Bend", "double", .5, 0, 2)
-
-            self.frontBend_att = self.addAnimParam(
-                "frontBend", "Front Bend", "double", .5, 0, 2)
 
         # Setup ------------------------------------------
         # Eval Fcurve
@@ -415,21 +358,6 @@ class Component(component.Main):
         we shouldn't create any new object in this method.
 
         """
-
-        # Auto bend ----------------------------
-        if self.settings["autoBend"]:
-            mul_node = node.createMulNode(
-                [self.autoBendChain[0].ry, self.autoBendChain[0].rz],
-                [self.sideBend_att, self.frontBend_att])
-
-            mul_node.outputX >> self.ik1autoRot_lvl.rz
-            mul_node.outputY >> self.ik1autoRot_lvl.rx
-
-            self.ikHandleAutoBend = primitive.addIkHandle(
-                self.autoBend_ctl,
-                self.getName("ikHandleAutoBend"),
-                self.autoBendChain,
-                "ikSCsolver")
 
         # Tangent position ---------------------------------
         # common part
@@ -540,64 +468,8 @@ class Component(component.Main):
             pm.connectAttr(self.st_att[i], op + ".stretch")
             pm.connectAttr(self.sq_att[i], op + ".squash")
 
-            # Controlers
-            if i == 0:
-                mulmat_node = applyop.gear_mulmatrix_op(
-                    self.div_cns[i].attr("worldMatrix"),
-                    self.root.attr("worldInverseMatrix"))
-
-                dm_node = node.createDecomposeMatrixNode(
-                    mulmat_node + ".output")
-
-                pm.connectAttr(dm_node + ".outputTranslate",
-                               self.fk_npo[i].attr("t"))
-
-            else:
-                mulmat_node = applyop.gear_mulmatrix_op(
-                    self.div_cns[i].attr("worldMatrix"),
-                    self.div_cns[i - 1].attr("worldInverseMatrix"))
-
-                dm_node = node.createDecomposeMatrixNode(
-                    mulmat_node + ".output")
-
-                mul_node = node.createMulNode(div_node + ".output",
-                                              dm_node + ".outputTranslate")
-
-                pm.connectAttr(mul_node + ".output", self.fk_npo[i].attr("t"))
-
-            pm.connectAttr(dm_node + ".outputRotate", self.fk_npo[i].attr("r"))
-
-            # Orientation Lock
-            if i == 0:
-                dm_node = node.createDecomposeMatrixNode(
-                    self.ik0_ctl + ".worldMatrix")
-
-                blend_node = node.createBlendNode(
-                    [dm_node + ".outputRotate%s" % s for s in "XYZ"],
-                    [cns + ".rotate%s" % s for s in "XYZ"],
-                    self.lock_ori0_att)
-
-                self.div_cns[i].attr("rotate").disconnect()
-
-                pm.connectAttr(blend_node + ".output",
-                               self.div_cns[i] + ".rotate")
-
-            elif i == self.settings["division"] - 1:
-                dm_node = node.createDecomposeMatrixNode(
-                    self.ik1_ctl + ".worldMatrix")
-
-                blend_node = node.createBlendNode(
-                    [dm_node + ".outputRotate%s" % s for s in "XYZ"],
-                    [cns + ".rotate%s" % s for s in "XYZ"],
-                    self.lock_ori1_att)
-
-                self.div_cns[i].attr("rotate").disconnect()
-                pm.connectAttr(blend_node + ".output",
-                               self.div_cns[i] + ".rotate")
 
         # Connections (Hooks) ------------------------------
-        pm.parentConstraint(self.hip_lvl, self.cnx0)
-        pm.scaleConstraint(self.hip_lvl, self.cnx0)
         pm.parentConstraint(self.scl_transforms[-1], self.cnx1)
         pm.scaleConstraint(self.scl_transforms[-1], self.cnx1)
 
@@ -609,8 +481,8 @@ class Component(component.Main):
         self.relatives["root"] = self.cnx0
         self.relatives["eff"] = self.cnx1
 
-        self.controlRelatives["root"] = self.fk_ctl[0]
-        self.controlRelatives["eff"] = self.fk_ctl[-2]
+        # self.controlRelatives["root"] = self.fk_ctl[0]
+        # self.controlRelatives["eff"] = self.fk_ctl[-2]
 
         self.jointRelatives["root"] = 0
         self.jointRelatives["eff"] = -1
