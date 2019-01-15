@@ -461,9 +461,13 @@ class Component(component.Main):
             pm.connectAttr(self.sq_att[i], op + ".squash")
 
 
-        # Connections (Hooks) ------------------------------
-        pm.parentConstraint(self.scl_transforms[-1], self.cnx1)
+        # # Connections (Hooks) ------------------------------
+        pm.pointConstraint(self.scl_transforms[0], self.cnx0)
+        pm.scaleConstraint(self.scl_transforms[0], self.cnx0)
+        pm.orientConstraint(self.ik0_ctl, self.cnx0)
+        pm.pointConstraint(self.scl_transforms[-1], self.cnx1)
         pm.scaleConstraint(self.scl_transforms[-1], self.cnx1)
+        pm.orientConstraint(self.ik1_ctl, self.cnx1)
 
     # =====================================================
     # CONNECTOR
