@@ -1,6 +1,5 @@
 """Component Eye 01 module"""
 
-import pymel.core as pm
 from pymel.core import datatypes
 
 from mgear.shifter import component
@@ -34,7 +33,7 @@ class Component(component.Main):
                                        "sphere",
                                        w=1 * self.size,
                                        tp=self.parentCtlTag)
-        self.eye_npo = primitive.addTransform(self.root,
+        self.eye_npo = primitive.addTransform(self.eyeOver_ctl,
                                               self.getName("eye_npo"),
                                               t)
         self.eyeFK_ctl = self.addCtl(self.eye_npo,
@@ -106,11 +105,6 @@ class Component(component.Main):
 
         applyop.aimCns(
             self.eye_npo, self.eyeIK_ctl, "zy", 2, upvVec, self.root, False)
-
-        pm.scaleConstraint(
-            self.eyeOver_ctl, self.eye_npo, maintainOffset=False)
-        pm.pointConstraint(
-            self.eyeOver_ctl, self.eye_npo, maintainOffset=False)
 
     # =====================================================
     # CONNECTOR
