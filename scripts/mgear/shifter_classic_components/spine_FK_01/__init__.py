@@ -36,7 +36,7 @@ class Component(component.Main):
         self.fk_ctl = []
         self.fk_npo = []
         parentctl = self.root
-        blend_increment = 1.0 / (self.settings["division"] -1)
+        blend_increment = 1.0 / (self.settings["division"] - 1)
         blend_val = 0.0
         for i in range(self.settings["division"]):
             fk_npo = primitive.addTransform(
@@ -423,8 +423,6 @@ class Component(component.Main):
 
             # References
             u = i / (self.settings["division"] - 1.0)
-            if i == 0:  # we add extra 10% to the first vertebra
-                u = (1.0 / (self.settings["division"] - 1.0)) / 10
 
             cns = applyop.pathCns(
                 self.div_cns[i], self.slv_crv, False, u, True)
@@ -460,8 +458,7 @@ class Component(component.Main):
             pm.connectAttr(self.st_att[i], op + ".stretch")
             pm.connectAttr(self.sq_att[i], op + ".squash")
 
-
-        # # Connections (Hooks) ------------------------------
+        # Connections (Hooks) ------------------------------
         pm.pointConstraint(self.scl_transforms[0], self.cnx0)
         pm.scaleConstraint(self.scl_transforms[0], self.cnx0)
         pm.orientConstraint(self.ik0_ctl, self.cnx0)
