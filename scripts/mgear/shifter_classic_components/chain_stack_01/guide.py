@@ -72,6 +72,7 @@ class Guide(guide.ComponentGuide):
         self.pSimpleFK = self.addParam("simpleFK", "bool", False)
         self.pMasterChain = self.addParam("masterChainLocal", "string", "")
         self.pMasterChain = self.addParam("masterChainGlobal", "string", "")
+        self.pVisHost = self.addParam("visHost", "string", "")
 
         self.pUseIndex = self.addParam("useIndex", "bool", False)
         self.pParentJointIndex = self.addParam(
@@ -146,6 +147,9 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
             self.root.attr("masterChainLocal").get())
         self.settingsTab.masterGlobal_lineEdit.setText(
             self.root.attr("masterChainGlobal").get())
+        self.settingsTab.visHost_lineEdit.setText(
+            self.root.attr("visHost").get())
+
 
     def create_componentLayout(self):
 
@@ -201,6 +205,11 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
             partial(self.updateMasterChain,
                     self.settingsTab.masterGlobal_lineEdit,
                     "masterChainGlobal"))
+
+        self.settingsTab.visHost_pushButton.clicked.connect(
+            partial(self.updateHostUI,
+                    self.settingsTab.visHost_lineEdit,
+                    "visHost"))
 
     def updateMasterChain(self, lEdit, targetAttr):
         oType = pm.nodetypes.Transform

@@ -289,15 +289,24 @@ class Component(component.Main):
     # =====================================================
     def addAttributes(self):
         """Create the anim and setupr rig attributes for the component"""
+
+        # set the optionl host for visibility controls
+        if self.settings["visHost"]:
+            vis_host = self.rig.findRelative(self.settings["visHost"])
+        else:
+            vis_host = None
+
         self.fkVis_att = self.addAnimParam("FK_vis",
                                            "FK vis",
                                            "bool",
-                                           True)
+                                           True,
+                                           uihost=vis_host)
         if not self.settings["simpleFK"]:
             self.ikVis_att = self.addAnimParam("IK_vis",
                                                "IK vis",
                                                "bool",
-                                               True)
+                                               True,
+                                               uihost=vis_host)
 
             if self.settings["keepLength"]:
                 self.length_ratio_att = self.addAnimParam("length_ratio",
