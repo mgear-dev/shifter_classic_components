@@ -1,9 +1,7 @@
 import mgear.core.pyqt as gqt
 QtGui, QtCore, QtWidgets, wrapInstance = gqt.qt_import()
 
-
 class Ui_Form(object):
-
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(294, 354)
@@ -42,6 +40,18 @@ class Ui_Form(object):
         self.masterGlobal_pushButton.setObjectName("masterGlobal_pushButton")
         self.horizontalLayout_4.addWidget(self.masterGlobal_pushButton)
         self.gridLayout_4.addLayout(self.horizontalLayout_4, 1, 0, 1, 1)
+        self.horizontalLayout_6 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_6.setObjectName("horizontalLayout_6")
+        self.jntNb_label_3 = QtWidgets.QLabel(self.groupBox_3)
+        self.jntNb_label_3.setObjectName("jntNb_label_3")
+        self.horizontalLayout_6.addWidget(self.jntNb_label_3)
+        self.cnxOffset_spinBox = QtWidgets.QSpinBox(self.groupBox_3)
+        self.cnxOffset_spinBox.setMinimum(0)
+        self.cnxOffset_spinBox.setMaximum(9999)
+        self.cnxOffset_spinBox.setProperty("value", 0)
+        self.cnxOffset_spinBox.setObjectName("cnxOffset_spinBox")
+        self.horizontalLayout_6.addWidget(self.cnxOffset_spinBox)
+        self.gridLayout_4.addLayout(self.horizontalLayout_6, 2, 0, 1, 1)
         self.gridLayout.addWidget(self.groupBox_3, 1, 0, 1, 1)
         spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout.addItem(spacerItem, 2, 0, 1, 1)
@@ -78,3 +88,6 @@ class Ui_Form(object):
         self.masterLocal_pushButton.setText(gqt.fakeTranslate("Form", "<<", None, -1))
         self.label_3.setText(gqt.fakeTranslate("Form", "Global:", None, -1))
         self.masterGlobal_pushButton.setText(gqt.fakeTranslate("Form", "<<", None, -1))
+        self.jntNb_label_3.setText(gqt.fakeTranslate("Form", "Connection Offset", None, -1))
+        self.cnxOffset_spinBox.setToolTip(gqt.fakeTranslate("Form", "<html><head/><body><p>Index value to offset the connection between the Master chains and the slave chain. For example if the slave chain need to start the rotation from the second segment of the master chain, the offset will be 1.</p><p><span style=\" font-weight:600;\">WARNING</span>: If  connection is out of index, will fallback to connect to the latest section in the master</p></body></html>", None, -1))
+

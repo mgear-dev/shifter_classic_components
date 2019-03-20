@@ -181,18 +181,45 @@ class Component(component.Main):
                                       out_glob)
             # connect in global
             if mstr_global:
-                mstr_out = mstr_global.fk_global_out[e]
-                glob_in = self.fk_global_in[e]
-                for srt in ["scale", "rotate", "translate"]:
-                    pm.connectAttr(mstr_out.attr(srt), glob_in.attr(srt))
+                self.connect_master(mstr_global.fk_global_out,
+                                    self.fk_global_in,
+                                    e,
+                                    self.settings["cnxOffset"])
+
             # connect in local
             if mstr_local:
-                mstr_out = mstr_local.fk_local_out[e]
-                local_in = self.fk_local_in[e]
-                for srt in ["scale", "rotate", "translate"]:
-                    pm.connectAttr(mstr_out.attr(srt), local_in.attr(srt))
+                self.connect_master(mstr_local.fk_local_out,
+                                    self.fk_local_in,
+                                    e,
+                                    self.settings["cnxOffset"])
+
             for shp in ctl.getShapes():
                 pm.connectAttr(self.fkVis_att, shp.attr("visibility"))
+
+        for ctl in self.tweak_ctl:
+            for shp in ctl.getShapes():
+                pm.connectAttr(self.ikVis_att, shp.attr("visibility"))
+
+    def connect_master(self, mstr_out, slave_in, idx, offset):
+        """Connect master and slave chain
+
+        Args:
+            mstr_out (list): List of master outputs
+            slave_in (list): List of slave inputs
+            idx (int): Input index
+            offset (int): Offset for the mastr ouput index
+        """
+        # we need to check if  master have enought sections
+        # if  connection is out of index, will fallback to the latest
+        # section in the master
+        if (idx + offset) > len(mstr_out) - 1:
+            mstr_e = len(mstr_out) - 1
+        else:
+            mstr_e = idx + offset
+        m_out = mstr_out[mstr_e]
+        s_in = slave_in[idx]
+        for srt in ["scale", "rotate", "translate"]:
+            pm.connectAttr(m_out.attr(srt), s_in.attr(srt))
 
     # =====================================================
     # CONNECTOR

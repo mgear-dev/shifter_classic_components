@@ -67,6 +67,7 @@ class Guide(guide.ComponentGuide):
         self.pAddJoints = self.addParam("addJoints", "bool", True)
         self.pMasterChain = self.addParam("masterChainLocal", "string", "")
         self.pMasterChain = self.addParam("masterChainGlobal", "string", "")
+        self.pCnxOffset = self.addParam("cnxOffset", "long", 0, 0)
 
         self.pUseIndex = self.addParam("useIndex", "bool", False)
         self.pParentJointIndex = self.addParam(
@@ -133,6 +134,8 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
             self.root.attr("masterChainLocal").get())
         self.settingsTab.masterGlobal_lineEdit.setText(
             self.root.attr("masterChainGlobal").get())
+        self.settingsTab.cnxOffset_spinBox.setValue(
+            self.root.attr("cnxOffset").get())
 
     def create_componentLayout(self):
 
@@ -168,6 +171,11 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
             partial(self.updateMasterChain,
                     self.settingsTab.masterGlobal_lineEdit,
                     "masterChainGlobal"))
+
+        self.settingsTab.cnxOffset_spinBox.valueChanged.connect(
+            partial(self.updateSpinBox,
+                    self.settingsTab.cnxOffset_spinBox,
+                    "cnxOffset"))
 
     def updateMasterChain(self, lEdit, targetAttr):
         oType = pm.nodetypes.Transform

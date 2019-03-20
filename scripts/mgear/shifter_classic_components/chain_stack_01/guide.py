@@ -72,6 +72,7 @@ class Guide(guide.ComponentGuide):
         self.pSimpleFK = self.addParam("simpleFK", "bool", False)
         self.pMasterChain = self.addParam("masterChainLocal", "string", "")
         self.pMasterChain = self.addParam("masterChainGlobal", "string", "")
+        self.pCnxOffset = self.addParam("cnxOffset", "long", 0, 0)
         self.pVisHost = self.addParam("visHost", "string", "")
 
         self.pUseIndex = self.addParam("useIndex", "bool", False)
@@ -147,6 +148,8 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
             self.root.attr("masterChainLocal").get())
         self.settingsTab.masterGlobal_lineEdit.setText(
             self.root.attr("masterChainGlobal").get())
+        self.settingsTab.cnxOffset_spinBox.setValue(
+            self.root.attr("cnxOffset").get())
         self.settingsTab.visHost_lineEdit.setText(
             self.root.attr("visHost").get())
 
@@ -205,6 +208,11 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
             partial(self.updateMasterChain,
                     self.settingsTab.masterGlobal_lineEdit,
                     "masterChainGlobal"))
+
+        self.settingsTab.cnxOffset_spinBox.valueChanged.connect(
+            partial(self.updateSpinBox,
+                    self.settingsTab.cnxOffset_spinBox,
+                    "cnxOffset"))
 
         self.settingsTab.visHost_pushButton.clicked.connect(
             partial(self.updateHostUI,
