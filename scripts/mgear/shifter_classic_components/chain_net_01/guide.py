@@ -19,7 +19,7 @@ EMAIL = ""
 VERSION = [1, 0, 0]
 TYPE = "chain_net_01"
 NAME = "chain"
-DESCRIPTION = "Chain net"
+DESCRIPTION = ""
 
 ##########################################################
 # CLASS
@@ -62,8 +62,16 @@ class Guide(guide.ComponentGuide):
 
         self.pNeutralPose = self.addParam("neutralpose", "bool", False)
         self.pOverrideNegate = self.addParam("overrideNegate", "bool", False)
-        self.pNeighbor = self.addParam("neighbor", "string", "")
-        self.pInbetweenChains = self.addParam("inbetweenChains", "long", 0, 0)
+        self.pKeepLength = self.addParam("keepLength", "bool", False)
+        self.pOverrideJointNb = self.addParam("overrideJntNb", "bool", False)
+        self.pJntNb = self.addParam("jntNb", "long", 3, 1)
+        self.pExtraTweak = self.addParam("extraTweak", "bool", False)
+        self.pOnlyMaster = self.addParam("onlyMaster", "bool", False)
+        self.pMasterChainA = self.addParam("masterChainA", "string", "")
+        self.pMasterChainB = self.addParam("masterChainB", "string", "")
+        self.pBias = self.addParam("bias", "float", .5, 0, 1)
+        self.pCnxOffset = self.addParam("cnxOffset", "long", 0, 0)
+        self.pVisHost = self.addParam("visHost", "string", "")
 
         self.pUseIndex = self.addParam("useIndex", "bool", False)
         self.pParentJointIndex = self.addParam(
@@ -123,12 +131,30 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
                            "neutralpose")
         self.populateCheck(self.settingsTab.overrideNegate_checkBox,
                            "overrideNegate")
+        self.populateCheck(self.settingsTab.keepLength_checkBox,
+                           "keepLength")
+        self.populateCheck(self.settingsTab.overrideJntNb_checkBox,
+                           "overrideJntNb")
+        self.populateCheck(self.settingsTab.extraTweak_checkBox,
+                           "extraTweak")
+        self.settingsTab.jntNb_spinBox.setValue(self.root.attr("jntNb").get())
 
-        self.settingsTab.neighbor_lineEdit.setText(
-            self.root.attr("neighbor").get())
+        self.populateCheck(self.settingsTab.onlyMaster_checkBox,
+                           "onlyMaster")
 
-        self.settingsTab.inbetweenChains_spinBox.setValue(
-            self.root.attr("inbetweenChains").get())
+        self.settingsTab.masterA_lineEdit.setText(
+            self.root.attr("masterChainA").get())
+        self.settingsTab.masterB_lineEdit.setText(
+            self.root.attr("masterChainB").get())
+        self.settingsTab.cnxOffset_spinBox.setValue(
+            self.root.attr("cnxOffset").get())
+        self.settingsTab.visHost_lineEdit.setText(
+            self.root.attr("visHost").get())
+
+        self.settingsTab.bias_slider.setValue(
+            int(self.root.attr("bias").get() * 100))
+        self.settingsTab.bias_spinBox.setValue(
+            int(self.root.attr("bias").get() * 100))
 
     def create_componentLayout(self):
 
@@ -150,25 +176,65 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
                     self.settingsTab.overrideNegate_checkBox,
                     "overrideNegate"))
 
-        self.settingsTab.neighbor_pushButton.clicked.connect(
-            partial(self.updateNeighborChain,
-                    self.settingsTab.neighbor_lineEdit,
-                    "neighbor"))
+        self.settingsTab.keepLength_checkBox.stateChanged.connect(
+            partial(self.updateCheck,
+                    self.settingsTab.keepLength_checkBox,
+                    "keepLength"))
 
-        self.settingsTab.inbetweenChains_spinBox.valueChanged.connect(
+        self.settingsTab.overrideJntNb_checkBox.stateChanged.connect(
+            partial(self.updateCheck,
+                    self.settingsTab.overrideJntNb_checkBox,
+                    "overrideJntNb"))
+
+        self.settingsTab.jntNb_spinBox.valueChanged.connect(
             partial(self.updateSpinBox,
-                    self.settingsTab.inbetweenChains_spinBox,
-                    "inbetweenChains"))
+                    self.settingsTab.jntNb_spinBox,
+                    "jntNb"))
 
-    def updateNeighborChain(self, lEdit, targetAttr):
+        self.settingsTab.extraTweak_checkBox.stateChanged.connect(
+            partial(self.updateCheck,
+                    self.settingsTab.extraTweak_checkBox,
+                    "extraTweak"))
+
+        self.settingsTab.onlyMaster_checkBox.stateChanged.connect(
+            partial(self.updateCheck,
+                    self.settingsTab.onlyMaster_checkBox,
+                    "onlyMaster"))
+
+        self.settingsTab.masterA_pushButton.clicked.connect(
+            partial(self.updateMasterChain,
+                    self.settingsTab.masterA_lineEdit,
+                    "masterChainA"))
+
+        self.settingsTab.masterB_pushButton.clicked.connect(
+            partial(self.updateMasterChain,
+                    self.settingsTab.masterB_lineEdit,
+                    "masterChainB"))
+
+        self.settingsTab.cnxOffset_spinBox.valueChanged.connect(
+            partial(self.updateSpinBox,
+                    self.settingsTab.cnxOffset_spinBox,
+                    "cnxOffset"))
+
+        self.settingsTab.visHost_pushButton.clicked.connect(
+            partial(self.updateHostUI,
+                    self.settingsTab.visHost_lineEdit,
+                    "visHost"))
+
+        self.settingsTab.bias_slider.valueChanged.connect(
+            partial(self.updateSlider, self.settingsTab.bias_slider, "bias"))
+
+        self.settingsTab.bias_spinBox.valueChanged.connect(
+            partial(self.updateSlider, self.settingsTab.bias_spinBox, "bias"))
+
+    def updateMasterChain(self, lEdit, targetAttr):
         oType = pm.nodetypes.Transform
 
         oSel = pm.selected()
         compatible = [TYPE]
         if oSel:
             if oSel[0] == self.root:
-                pm.displayWarning(
-                    "Self root can not be Neighbor. Cycle Warning")
+                pm.displayWarning("Self root can not be Master. Cycle Warning")
             else:
                 if (isinstance(oSel[0], oType)
                         and oSel[0].hasAttr("comp_type")
@@ -183,9 +249,9 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
                         self.root.attr(targetAttr).set(lEdit.text())
                     else:
                         pm.displayWarning(
-                            "Invalid Neighbor: {} ".format(oSel[0]) +
+                            "Invalid Master: {} ".format(oSel[0]) +
                             "Current chain has: {} sections".format(self_len) +
-                            " But Neighbor chain has" +
+                            " But Master chain has" +
                             " less sections: {}".format(str(master_len)))
                 else:
                     pm.displayWarning("The selected element is not a "
@@ -197,7 +263,7 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
             if lEdit.text():
                 lEdit.clear()
                 self.root.attr(targetAttr).set("")
-                pm.displayWarning("The previous Neighbor Chain have been "
+                pm.displayWarning("The previous Master Chain have been "
                                   "cleared")
 
     def _get_chain_segments_length(self, chain_root):
