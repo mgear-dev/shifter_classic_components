@@ -72,7 +72,8 @@ class Guide(guide.ComponentGuide):
         self.pMaxStretch = self.addParam("maxstretch", "double", 1, 1)
         self.pMaxSquash = self.addParam("maxsquash", "double", 1, 0, 1)
         self.pSoftness = self.addParam("softness", "double", 0, 0, 1)
-        self.pAddJoints = self.addParam("addJoints", "bool", True)
+        self.pIsGlobalMaster = self.addParam("addJoints", "bool", True)
+        self.pAddJoints = self.addParam("isGlobalMaster", "bool", False)
         self.pMasterChain = self.addParam("masterChainLocal", "string", "")
         self.pMasterChain = self.addParam("masterChainGlobal", "string", "")
         self.pCnxOffset = self.addParam("cnxOffset", "long", 0, 0)
@@ -148,6 +149,16 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
             self.root.attr("maxstretch").get())
         self.settingsTab.maxSquash_spinBox.setValue(
             self.root.attr("maxsquash").get())
+        self.populateCheck(self.settingsTab.addJoints_checkBox,
+                           "addJoints")
+        self.populateCheck(self.settingsTab.isGlobalMaster_checkBox,
+                           "isGlobalMaster")
+        self.settingsTab.masterLocal_lineEdit.setText(
+            self.root.attr("masterChainLocal").get())
+        self.settingsTab.masterGlobal_lineEdit.setText(
+            self.root.attr("masterChainGlobal").get())
+        self.settingsTab.cnxOffset_spinBox.setValue(
+            self.root.attr("cnxOffset").get())
 
     def create_componentLayout(self):
 
@@ -210,6 +221,11 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
             partial(self.updateSpinBox,
                     self.settingsTab.cnxOffset_spinBox,
                     "cnxOffset"))
+
+        self.settingsTab.isGlobalMaster_checkBox.stateChanged.connect(
+            partial(self.updateCheck,
+                    self.settingsTab.isGlobalMaster_checkBox,
+                    "isGlobalMaster"))
 
     def updateMasterChain(self, lEdit, targetAttr):
         oType = pm.nodetypes.Transform

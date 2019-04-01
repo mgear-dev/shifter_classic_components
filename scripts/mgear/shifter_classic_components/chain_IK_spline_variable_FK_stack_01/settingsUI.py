@@ -1,18 +1,11 @@
-# -*- coding: utf-8 -*-
+import mgear.core.pyqt as gqt
+QtGui, QtCore, QtWidgets, wrapInstance = gqt.qt_import()
 
-# Form implementation generated from reading ui file 'D:/repo/mgear_dist/framework/shifter_classic_components/scripts/mgear/shifter_classic_components/chain_IK_spline_variable_FK_stack_01/settingsUI.ui'
-#
-# Created: Fri Mar 29 15:53:02 2019
-#      by: pyside2-uic  running on PySide2 2.0.0~alpha0
-#
-# WARNING! All changes made in this file will be lost!
-
-from PySide2 import QtCore, QtGui, QtWidgets
 
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(413, 478)
+        Form.resize(419, 509)
         self.verticalLayout = QtWidgets.QVBoxLayout(Form)
         self.verticalLayout.setObjectName("verticalLayout")
         self.groupBox_3 = QtWidgets.QGroupBox(Form)
@@ -161,6 +154,11 @@ class Ui_Form(object):
         self.cnxOffset_spinBox.setObjectName("cnxOffset_spinBox")
         self.horizontalLayout_7.addWidget(self.cnxOffset_spinBox)
         self.gridLayout_5.addLayout(self.horizontalLayout_7, 2, 0, 1, 1)
+        self.isGlobalMaster_checkBox = QtWidgets.QCheckBox(self.groupBox_4)
+        self.isGlobalMaster_checkBox.setText("Only IK Global Master (No FK ctl and Joints)")
+        self.isGlobalMaster_checkBox.setChecked(False)
+        self.isGlobalMaster_checkBox.setObjectName("isGlobalMaster_checkBox")
+        self.gridLayout_5.addWidget(self.isGlobalMaster_checkBox, 3, 0, 1, 1)
         self.verticalLayout.addWidget(self.groupBox_4)
         spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem)
@@ -169,18 +167,20 @@ class Ui_Form(object):
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
-        Form.setWindowTitle(QtWidgets.QApplication.translate("Form", "Form", None, -1))
-        self.groupBox_3.setTitle(QtWidgets.QApplication.translate("Form", "FK Controls", None, -1))
-        self.fkNb_label.setText(QtWidgets.QApplication.translate("Form", "FK Ctl Number", None, -1))
-        self.softness_label.setText(QtWidgets.QApplication.translate("Form", "Softness", None, -1))
-        self.softness_label_2.setText(QtWidgets.QApplication.translate("Form", "Position", None, -1))
-        self.maxStretch_label.setText(QtWidgets.QApplication.translate("Form", "Max Stretch", None, -1))
-        self.maxSquash_label.setText(QtWidgets.QApplication.translate("Form", "Max Squash", None, -1))
-        self.groupBox_4.setTitle(QtWidgets.QApplication.translate("Form", "Chain Master", None, -1))
-        self.label.setText(QtWidgets.QApplication.translate("Form", "Local:", None, -1))
-        self.masterLocal_pushButton.setText(QtWidgets.QApplication.translate("Form", "<<", None, -1))
-        self.label_3.setText(QtWidgets.QApplication.translate("Form", "Global:", None, -1))
-        self.masterGlobal_pushButton.setText(QtWidgets.QApplication.translate("Form", "<<", None, -1))
-        self.jntNb_label_3.setText(QtWidgets.QApplication.translate("Form", "Connection Offset", None, -1))
-        self.cnxOffset_spinBox.setToolTip(QtWidgets.QApplication.translate("Form", "<html><head/><body><p>Index value to offset the connection between the Master chains and the slave chain. For example if the slave chain need to start the rotation from the second segment of the master chain, the offset will be 1.</p><p><span style=\" font-weight:600;\">WARNING</span>: If  connection is out of index, will fallback to connect to the latest section in the master</p></body></html>", None, -1))
+        Form.setWindowTitle(gqt.fakeTranslate("Form", "Form", None, -1))
+        self.groupBox_3.setTitle(gqt.fakeTranslate("Form", "FK Controls", None, -1))
+        self.fkNb_label.setText(gqt.fakeTranslate("Form", "FK Ctl Number", None, -1))
+        self.softness_label.setText(gqt.fakeTranslate("Form", "Softness", None, -1))
+        self.softness_label_2.setText(gqt.fakeTranslate("Form", "Position", None, -1))
+        self.maxStretch_label.setText(gqt.fakeTranslate("Form", "Max Stretch", None, -1))
+        self.maxSquash_label.setText(gqt.fakeTranslate("Form", "Max Squash", None, -1))
+        self.groupBox_4.setTitle(gqt.fakeTranslate("Form", "Chain Master", None, -1))
+        self.label.setText(gqt.fakeTranslate("Form", "Local:", None, -1))
+        self.masterLocal_pushButton.setText(gqt.fakeTranslate("Form", "<<", None, -1))
+        self.label_3.setText(gqt.fakeTranslate("Form", "Global:", None, -1))
+        self.masterGlobal_lineEdit.setToolTip(gqt.fakeTranslate("Form", "<html><head/><body><p>Global Master only connects to the IK controls</p></body></html>", None, -1))
+        self.masterGlobal_pushButton.setText(gqt.fakeTranslate("Form", "<<", None, -1))
+        self.jntNb_label_3.setText(gqt.fakeTranslate("Form", "Connection Offset", None, -1))
+        self.cnxOffset_spinBox.setToolTip(gqt.fakeTranslate("Form", "<html><head/><body><p>Index value to offset the connection between the Master chains and the slave chain. For example if the slave chain need to start the rotation from the second segment of the master chain, the offset will be 1.</p><p><span style=\" font-weight:600;\">WARNING</span>: If  connection is out of index, will fallback to connect to the latest section in the master</p></body></html>", None, -1))
+        self.isGlobalMaster_checkBox.setToolTip(gqt.fakeTranslate("Form", "<html><head/><body><p>If the component is going to be only a Global Master the FK controls are not need. Also ensure that the Joints are not created (Override Add Joints option)</p></body></html>", None, -1))
 
