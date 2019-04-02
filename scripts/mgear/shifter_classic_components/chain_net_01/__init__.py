@@ -55,6 +55,7 @@ class Component(component.Main):
         tOld = False
         fk_ctl = None
         self.previusTag = self.parentCtlTag
+        self.previusTagIk = self.parentCtlTag
         for i, t in enumerate(transform.getChainTransform(self.guide.apos,
                                                           self.normal,
                                                           self.negate)):
@@ -93,6 +94,7 @@ class Component(component.Main):
                 mirrorConf=self.mirror_conf)
 
             self.fk_ctl.append(fk_ctl)
+            self.previusTag = fk_ctl
 
             parent = fk_ctl
 
@@ -113,12 +115,12 @@ class Component(component.Main):
                 h=self.size * .15,
                 d=self.size * .15,
                 ro=datatypes.Vector([0, 0, 1.5708]),
-                tp=self.previusTag,
+                tp=self.previusTagIk,
                 mirrorConf=self.mirror_conf)
 
             self.ik_ctl.append(ik_ctl)
 
-            self.previusTag = fk_ctl
+            self.previusTagIk = ik_ctl
 
             if not self.settings["onlyMaster"]:
 
@@ -148,8 +150,10 @@ class Component(component.Main):
             h=self.size * .15,
             d=self.size * .15,
             ro=datatypes.Vector([0, 0, 1.5708]),
-            tp=self.previusTag,
+            tp=self.previusTagIk,
             mirrorConf=self.mirror_conf)
+
+        self.previusTagIk = ik_ctl
 
         if not self.settings["onlyMaster"]:
             upv_curv_lvl = primitive.addTransform(
@@ -186,7 +190,7 @@ class Component(component.Main):
                 h=self.size * .1,
                 d=self.size * .1,
                 ro=datatypes.Vector([0, 0, 1.5708]),
-                tp=self.previusTag,
+                tp=self.self.previusTagIk,
                 mirrorConf=self.mirror_conf)
             if not self.settings["onlyMaster"]:
                 upv_curv_lvl = primitive.addTransform(
