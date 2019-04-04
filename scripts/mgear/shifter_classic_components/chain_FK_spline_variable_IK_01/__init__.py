@@ -301,8 +301,12 @@ class Component(component.Main):
         dm_node_scl = node.createDecomposeMatrixNode(self.root.worldMatrix)
 
         # IK controls
-        step = 1.000 / (self.ik_number - 1)
-        u = 0.000
+        if self.ik_number > 1:
+            div_val = self.ik_number - 1
+        else:
+            div_val = 1
+        step = 0.998 / div_val
+        u = 0.001
 
         for i in range(self.ik_number):
             cnsUpv = applyop.pathCns(self.ik_upv_cns[i],
@@ -342,8 +346,13 @@ class Component(component.Main):
             div_node_scl = node.createDivNode(self.mstIK_crv.length_ratio,
                                               dm_node_scl.outputScaleX)
 
-        step = 1.000 / (self.def_number - 1)
-        u = 0.000
+        if self.def_number > 1:
+            div_val = self.def_number - 1
+        else:
+            div_val = 1
+        step = 0.998 / div_val
+        u = 0.001
+
         for i in range(self.def_number):
             cnsUpv = applyop.pathCns(self.upv_cns[i],
                                      self.upvIK_crv,

@@ -1,7 +1,5 @@
 from functools import partial
-import pymel.core as pm
 
-from mgear import shifter
 from mgear.shifter.component import guide
 from mgear.core import pyqt
 from mgear.vendor.Qt import QtWidgets, QtCore
@@ -10,19 +8,22 @@ from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
 from maya.app.general.mayaMixin import MayaQDockWidget
 
 import settingsUI as sui
+import pymel.core as pm
+from mgear import shifter
 
 
 # guide info
-AUTHOR = "Miquel Campos"
-URL = "www.miquel-campos.com"
+AUTHOR = "anima inc."
+URL = "www.studioanima.co.jp"
 EMAIL = ""
 VERSION = [1, 0, 0]
-TYPE = "chain_stack_01"
+TYPE = "chain_IK_spline_variable_FK_stack_01"
 NAME = "chain"
-DESCRIPTION = "Stackable chain with special connector to drive many chains" \
-    " from one master chain. Initially designed for Anime Style hair" \
-    ", but can be used for any purpose. \n" \
-    "This component is base in 'chain_FK_spline_02'"
+DESCRIPTION = "IK chain with a spline driven joints. And variable number of \
+FK controls. \nIK is master, FK Slave. With stack for IK and FK controls \n\
+ WARNING: This component stack only support one level stack. This will avoid \
+ complex connections and keep the component a little lighter. If the master \
+ has more inputs will not move the slave of the slave. Only the direct slave"
 
 ##########################################################
 # CLASS
@@ -65,15 +66,17 @@ class Guide(guide.ComponentGuide):
 
         self.pNeutralPose = self.addParam("neutralpose", "bool", False)
         self.pOverrideNegate = self.addParam("overrideNegate", "bool", False)
-        self.pKeepLength = self.addParam("keepLength", "bool", False)
-        self.pOverrideJointNb = self.addParam("overrideJntNb", "bool", False)
-        self.pJntNb = self.addParam("jntNb", "long", 3, 1)
-        self.pExtraTweak = self.addParam("extraTweak", "bool", False)
-        self.pSimpleFK = self.addParam("simpleFK", "bool", False)
+        self.pfkNb = self.addParam("fkNb", "long", 5, 1)
+
+        self.pPosition = self.addParam("position", "double", 0, 0, 1)
+        self.pMaxStretch = self.addParam("maxstretch", "double", 1, 1)
+        self.pMaxSquash = self.addParam("maxsquash", "double", 1, 0, 1)
+        self.pSoftness = self.addParam("softness", "double", 0, 0, 1)
+        self.pIsGlobalMaster = self.addParam("addJoints", "bool", True)
+        self.pAddJoints = self.addParam("isGlobalMaster", "bool", False)
         self.pMasterChain = self.addParam("masterChainLocal", "string", "")
         self.pMasterChain = self.addParam("masterChainGlobal", "string", "")
         self.pCnxOffset = self.addParam("cnxOffset", "long", 0, 0)
-        self.pVisHost = self.addParam("visHost", "string", "")
 
         self.pUseIndex = self.addParam("useIndex", "bool", False)
         self.pParentJointIndex = self.addParam(
@@ -129,30 +132,33 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
         self.tabs.insertTab(1, self.settingsTab, "Component Settings")
 
         # populate component settings
-        self.populateCheck(self.settingsTab.neutralPose_checkBox,
-                           "neutralpose")
         self.populateCheck(self.settingsTab.overrideNegate_checkBox,
                            "overrideNegate")
-        self.populateCheck(self.settingsTab.keepLength_checkBox,
-                           "keepLength")
-        self.populateCheck(self.settingsTab.overrideJntNb_checkBox,
-                           "overrideJntNb")
-        self.populateCheck(self.settingsTab.extraTweak_checkBox,
-                           "extraTweak")
-        self.settingsTab.jntNb_spinBox.setValue(self.root.attr("jntNb").get())
 
-        self.populateCheck(self.settingsTab.simpleFK_checkBox,
-                           "simpleFK")
-
+        self.settingsTab.fkNb_spinBox.setValue(
+            self.root.attr("fkNb").get())
+        self.settingsTab.softness_slider.setValue(
+            int(self.root.attr("softness").get() * 100))
+        self.settingsTab.position_spinBox.setValue(
+            int(self.root.attr("position").get() * 100))
+        self.settingsTab.position_slider.setValue(
+            int(self.root.attr("position").get() * 100))
+        self.settingsTab.softness_spinBox.setValue(
+            int(self.root.attr("softness").get() * 100))
+        self.settingsTab.maxStretch_spinBox.setValue(
+            self.root.attr("maxstretch").get())
+        self.settingsTab.maxSquash_spinBox.setValue(
+            self.root.attr("maxsquash").get())
+        self.populateCheck(self.settingsTab.addJoints_checkBox,
+                           "addJoints")
+        self.populateCheck(self.settingsTab.isGlobalMaster_checkBox,
+                           "isGlobalMaster")
         self.settingsTab.masterLocal_lineEdit.setText(
             self.root.attr("masterChainLocal").get())
         self.settingsTab.masterGlobal_lineEdit.setText(
             self.root.attr("masterChainGlobal").get())
         self.settingsTab.cnxOffset_spinBox.setValue(
             self.root.attr("cnxOffset").get())
-        self.settingsTab.visHost_lineEdit.setText(
-            self.root.attr("visHost").get())
-
 
     def create_componentLayout(self):
 
@@ -164,40 +170,42 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
 
     def create_componentConnections(self):
 
-        self.settingsTab.neutralPose_checkBox.stateChanged.connect(
-            partial(self.updateCheck,
-                    self.settingsTab.neutralPose_checkBox,
-                    "neutralpose"))
-
         self.settingsTab.overrideNegate_checkBox.stateChanged.connect(
             partial(self.updateCheck,
                     self.settingsTab.overrideNegate_checkBox,
                     "overrideNegate"))
-
-        self.settingsTab.keepLength_checkBox.stateChanged.connect(
-            partial(self.updateCheck,
-                    self.settingsTab.keepLength_checkBox,
-                    "keepLength"))
-
-        self.settingsTab.overrideJntNb_checkBox.stateChanged.connect(
-            partial(self.updateCheck,
-                    self.settingsTab.overrideJntNb_checkBox,
-                    "overrideJntNb"))
-
-        self.settingsTab.jntNb_spinBox.valueChanged.connect(
+        self.settingsTab.fkNb_spinBox.valueChanged.connect(
             partial(self.updateSpinBox,
-                    self.settingsTab.jntNb_spinBox,
-                    "jntNb"))
-
-        self.settingsTab.extraTweak_checkBox.stateChanged.connect(
+                    self.settingsTab.fkNb_spinBox,
+                    "fkNb"))
+        self.settingsTab.softness_slider.valueChanged.connect(
+            partial(self.updateSlider,
+                    self.settingsTab.softness_slider,
+                    "softness"))
+        self.settingsTab.softness_spinBox.valueChanged.connect(
+            partial(self.updateSlider,
+                    self.settingsTab.softness_spinBox,
+                    "softness"))
+        self.settingsTab.position_slider.valueChanged.connect(
+            partial(self.updateSlider,
+                    self.settingsTab.position_slider,
+                    "position"))
+        self.settingsTab.position_spinBox.valueChanged.connect(
+            partial(self.updateSlider,
+                    self.settingsTab.position_spinBox,
+                    "position"))
+        self.settingsTab.maxStretch_spinBox.valueChanged.connect(
+            partial(self.updateSpinBox,
+                    self.settingsTab.maxStretch_spinBox,
+                    "maxstretch"))
+        self.settingsTab.maxSquash_spinBox.valueChanged.connect(
+            partial(self.updateSpinBox,
+                    self.settingsTab.maxSquash_spinBox,
+                    "maxsquash"))
+        self.settingsTab.addJoints_checkBox.stateChanged.connect(
             partial(self.updateCheck,
-                    self.settingsTab.extraTweak_checkBox,
-                    "extraTweak"))
-
-        self.settingsTab.simpleFK_checkBox.stateChanged.connect(
-            partial(self.updateCheck,
-                    self.settingsTab.simpleFK_checkBox,
-                    "simpleFK"))
+                    self.settingsTab.addJoints_checkBox,
+                    "addJoints"))
 
         self.settingsTab.masterLocal_pushButton.clicked.connect(
             partial(self.updateMasterChain,
@@ -214,10 +222,10 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
                     self.settingsTab.cnxOffset_spinBox,
                     "cnxOffset"))
 
-        self.settingsTab.visHost_pushButton.clicked.connect(
-            partial(self.updateHostUI,
-                    self.settingsTab.visHost_lineEdit,
-                    "visHost"))
+        self.settingsTab.isGlobalMaster_checkBox.stateChanged.connect(
+            partial(self.updateCheck,
+                    self.settingsTab.isGlobalMaster_checkBox,
+                    "isGlobalMaster"))
 
     def updateMasterChain(self, lEdit, targetAttr):
         oType = pm.nodetypes.Transform

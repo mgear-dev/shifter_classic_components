@@ -17,12 +17,11 @@ AUTHOR = "Miquel Campos"
 URL = "www.miquel-campos.com"
 EMAIL = ""
 VERSION = [1, 0, 0]
-TYPE = "chain_stack_01"
+TYPE = "lite_chain_stack_01"
 NAME = "chain"
 DESCRIPTION = "Stackable chain with special connector to drive many chains" \
     " from one master chain. Initially designed for Anime Style hair" \
-    ", but can be used for any purpose. \n" \
-    "This component is base in 'chain_FK_spline_02'"
+    ", but can be used for any purpose. \n"
 
 ##########################################################
 # CLASS
@@ -65,15 +64,10 @@ class Guide(guide.ComponentGuide):
 
         self.pNeutralPose = self.addParam("neutralpose", "bool", False)
         self.pOverrideNegate = self.addParam("overrideNegate", "bool", False)
-        self.pKeepLength = self.addParam("keepLength", "bool", False)
-        self.pOverrideJointNb = self.addParam("overrideJntNb", "bool", False)
-        self.pJntNb = self.addParam("jntNb", "long", 3, 1)
-        self.pExtraTweak = self.addParam("extraTweak", "bool", False)
-        self.pSimpleFK = self.addParam("simpleFK", "bool", False)
+        self.pAddJoints = self.addParam("addJoints", "bool", True)
         self.pMasterChain = self.addParam("masterChainLocal", "string", "")
         self.pMasterChain = self.addParam("masterChainGlobal", "string", "")
         self.pCnxOffset = self.addParam("cnxOffset", "long", 0, 0)
-        self.pVisHost = self.addParam("visHost", "string", "")
 
         self.pUseIndex = self.addParam("useIndex", "bool", False)
         self.pParentJointIndex = self.addParam(
@@ -133,16 +127,8 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
                            "neutralpose")
         self.populateCheck(self.settingsTab.overrideNegate_checkBox,
                            "overrideNegate")
-        self.populateCheck(self.settingsTab.keepLength_checkBox,
-                           "keepLength")
-        self.populateCheck(self.settingsTab.overrideJntNb_checkBox,
-                           "overrideJntNb")
-        self.populateCheck(self.settingsTab.extraTweak_checkBox,
-                           "extraTweak")
-        self.settingsTab.jntNb_spinBox.setValue(self.root.attr("jntNb").get())
-
-        self.populateCheck(self.settingsTab.simpleFK_checkBox,
-                           "simpleFK")
+        self.populateCheck(self.settingsTab.addJoints_checkBox,
+                           "addJoints")
 
         self.settingsTab.masterLocal_lineEdit.setText(
             self.root.attr("masterChainLocal").get())
@@ -150,9 +136,6 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
             self.root.attr("masterChainGlobal").get())
         self.settingsTab.cnxOffset_spinBox.setValue(
             self.root.attr("cnxOffset").get())
-        self.settingsTab.visHost_lineEdit.setText(
-            self.root.attr("visHost").get())
-
 
     def create_componentLayout(self):
 
@@ -174,30 +157,10 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
                     self.settingsTab.overrideNegate_checkBox,
                     "overrideNegate"))
 
-        self.settingsTab.keepLength_checkBox.stateChanged.connect(
+        self.settingsTab.addJoints_checkBox.stateChanged.connect(
             partial(self.updateCheck,
-                    self.settingsTab.keepLength_checkBox,
-                    "keepLength"))
-
-        self.settingsTab.overrideJntNb_checkBox.stateChanged.connect(
-            partial(self.updateCheck,
-                    self.settingsTab.overrideJntNb_checkBox,
-                    "overrideJntNb"))
-
-        self.settingsTab.jntNb_spinBox.valueChanged.connect(
-            partial(self.updateSpinBox,
-                    self.settingsTab.jntNb_spinBox,
-                    "jntNb"))
-
-        self.settingsTab.extraTweak_checkBox.stateChanged.connect(
-            partial(self.updateCheck,
-                    self.settingsTab.extraTweak_checkBox,
-                    "extraTweak"))
-
-        self.settingsTab.simpleFK_checkBox.stateChanged.connect(
-            partial(self.updateCheck,
-                    self.settingsTab.simpleFK_checkBox,
-                    "simpleFK"))
+                    self.settingsTab.addJoints_checkBox,
+                    "addJoints"))
 
         self.settingsTab.masterLocal_pushButton.clicked.connect(
             partial(self.updateMasterChain,
@@ -213,11 +176,6 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
             partial(self.updateSpinBox,
                     self.settingsTab.cnxOffset_spinBox,
                     "cnxOffset"))
-
-        self.settingsTab.visHost_pushButton.clicked.connect(
-            partial(self.updateHostUI,
-                    self.settingsTab.visHost_lineEdit,
-                    "visHost"))
 
     def updateMasterChain(self, lEdit, targetAttr):
         oType = pm.nodetypes.Transform

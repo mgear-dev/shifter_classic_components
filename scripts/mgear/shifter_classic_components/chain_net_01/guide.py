@@ -17,12 +17,9 @@ AUTHOR = "Miquel Campos"
 URL = "www.miquel-campos.com"
 EMAIL = ""
 VERSION = [1, 0, 0]
-TYPE = "chain_stack_01"
+TYPE = "chain_net_01"
 NAME = "chain"
-DESCRIPTION = "Stackable chain with special connector to drive many chains" \
-    " from one master chain. Initially designed for Anime Style hair" \
-    ", but can be used for any purpose. \n" \
-    "This component is base in 'chain_FK_spline_02'"
+DESCRIPTION = ""
 
 ##########################################################
 # CLASS
@@ -69,9 +66,10 @@ class Guide(guide.ComponentGuide):
         self.pOverrideJointNb = self.addParam("overrideJntNb", "bool", False)
         self.pJntNb = self.addParam("jntNb", "long", 3, 1)
         self.pExtraTweak = self.addParam("extraTweak", "bool", False)
-        self.pSimpleFK = self.addParam("simpleFK", "bool", False)
-        self.pMasterChain = self.addParam("masterChainLocal", "string", "")
-        self.pMasterChain = self.addParam("masterChainGlobal", "string", "")
+        self.pOnlyMaster = self.addParam("onlyMaster", "bool", False)
+        self.pMasterChainA = self.addParam("masterChainA", "string", "")
+        self.pMasterChainB = self.addParam("masterChainB", "string", "")
+        self.pBias = self.addParam("bias", "float", .5, 0, 1)
         self.pCnxOffset = self.addParam("cnxOffset", "long", 0, 0)
         self.pVisHost = self.addParam("visHost", "string", "")
 
@@ -141,18 +139,22 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
                            "extraTweak")
         self.settingsTab.jntNb_spinBox.setValue(self.root.attr("jntNb").get())
 
-        self.populateCheck(self.settingsTab.simpleFK_checkBox,
-                           "simpleFK")
+        self.populateCheck(self.settingsTab.onlyMaster_checkBox,
+                           "onlyMaster")
 
-        self.settingsTab.masterLocal_lineEdit.setText(
-            self.root.attr("masterChainLocal").get())
-        self.settingsTab.masterGlobal_lineEdit.setText(
-            self.root.attr("masterChainGlobal").get())
+        self.settingsTab.masterA_lineEdit.setText(
+            self.root.attr("masterChainA").get())
+        self.settingsTab.masterB_lineEdit.setText(
+            self.root.attr("masterChainB").get())
         self.settingsTab.cnxOffset_spinBox.setValue(
             self.root.attr("cnxOffset").get())
         self.settingsTab.visHost_lineEdit.setText(
             self.root.attr("visHost").get())
 
+        self.settingsTab.bias_slider.setValue(
+            int(self.root.attr("bias").get() * 100))
+        self.settingsTab.bias_spinBox.setValue(
+            int(self.root.attr("bias").get() * 100))
 
     def create_componentLayout(self):
 
@@ -194,20 +196,20 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
                     self.settingsTab.extraTweak_checkBox,
                     "extraTweak"))
 
-        self.settingsTab.simpleFK_checkBox.stateChanged.connect(
+        self.settingsTab.onlyMaster_checkBox.stateChanged.connect(
             partial(self.updateCheck,
-                    self.settingsTab.simpleFK_checkBox,
-                    "simpleFK"))
+                    self.settingsTab.onlyMaster_checkBox,
+                    "onlyMaster"))
 
-        self.settingsTab.masterLocal_pushButton.clicked.connect(
+        self.settingsTab.masterA_pushButton.clicked.connect(
             partial(self.updateMasterChain,
-                    self.settingsTab.masterLocal_lineEdit,
-                    "masterChainLocal"))
+                    self.settingsTab.masterA_lineEdit,
+                    "masterChainA"))
 
-        self.settingsTab.masterGlobal_pushButton.clicked.connect(
+        self.settingsTab.masterB_pushButton.clicked.connect(
             partial(self.updateMasterChain,
-                    self.settingsTab.masterGlobal_lineEdit,
-                    "masterChainGlobal"))
+                    self.settingsTab.masterB_lineEdit,
+                    "masterChainB"))
 
         self.settingsTab.cnxOffset_spinBox.valueChanged.connect(
             partial(self.updateSpinBox,
@@ -218,6 +220,12 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
             partial(self.updateHostUI,
                     self.settingsTab.visHost_lineEdit,
                     "visHost"))
+
+        self.settingsTab.bias_slider.valueChanged.connect(
+            partial(self.updateSlider, self.settingsTab.bias_slider, "bias"))
+
+        self.settingsTab.bias_spinBox.valueChanged.connect(
+            partial(self.updateSlider, self.settingsTab.bias_spinBox, "bias"))
 
     def updateMasterChain(self, lEdit, targetAttr):
         oType = pm.nodetypes.Transform
