@@ -403,14 +403,18 @@ class Component(component.Main):
             transform.getTransform(self.fk_ctl[2]))
 
         # angle reader ----------------------------------------
+        t = transform.getTransformLookingAt(self.guide.apos[1],
+                                            self.guide.apos[2],
+                                            self.normal,
+                                            "xy")
         self.readerA = primitive.addTransform(
             self.root,
             self.getName("readerA_loc"),
-            transform.getTransform(self.mid_ctl))
+            t)
         self.readerB = primitive.addTransform(
             self.readerA,
             self.getName("readerB_loc"),
-            transform.getTransform(self.mid_ctl))
+            t)
         self.readerB.rotateOrder.set(2)
 
         # Divisions ----------------------------------------
@@ -985,7 +989,7 @@ class Component(component.Main):
         pm.parentConstraint(self.bone1, self.readerB, mo=True)
 
         # connect auto thickness
-        if self.negate and  self.settings["mirrorMid"]:
+        if self.negate and not self.settings["mirrorMid"]:
             d_val = 180 / self.length1
         else:
             d_val = -180 / self.length1

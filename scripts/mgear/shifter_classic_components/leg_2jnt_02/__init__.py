@@ -25,6 +25,7 @@ class Component(component.Main):
         self.WIP = self.options["mode"]
 
         self.normal = self.getNormalFromPos(self.guide.apos)
+        self.binormal = self.getBiNormalFromPos(self.guide.apos)
 
         self.length0 = vector.getDistance(
             self.guide.apos[0], self.guide.apos[1])
@@ -352,14 +353,18 @@ class Component(component.Main):
         self.tws2_rot.setAttr("sx", .001)
 
         # angle reader ----------------------------------------
+        t = transform.getTransformLookingAt(self.guide.apos[1],
+                                            self.guide.apos[0],
+                                            self.binormal,
+                                            "yz")
         self.readerA = primitive.addTransform(
             self.root,
             self.getName("readerA_loc"),
-            transform.getTransform(self.mid_ctl))
+            t)
         self.readerB = primitive.addTransform(
             self.readerA,
             self.getName("readerB_loc"),
-            transform.getTransform(self.mid_ctl))
+            t)
         self.readerB.rotateOrder.set(2)
 
         # Divisions ----------------------------------------
