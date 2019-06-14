@@ -197,8 +197,8 @@ class Component(component.Main):
 
         if self.settings["guideOrientWrist"]:
             t = self.guide.tra["wrist"]
-
             self.ik_cns.setMatrix(t)
+            self.ik_cns.setTranslation(self.guide.pos["wrist"], space="world")
 
         self.ikcns_ctl = self.addCtl(self.ik_cns,
                                      "ikcns_ctl",
