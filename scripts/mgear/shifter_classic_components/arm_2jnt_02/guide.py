@@ -73,9 +73,6 @@ class Guide(guide.ComponentGuide):
         self.pMaxStretch = self.addParam("maxstretch", "double", 1.5, 1, None)
         self.pIKTR = self.addParam("ikTR", "bool", False)
         self.pSuptJnts = self.addParam("supportJoints", "bool", True)
-        self.pGuideOrientWrist = self.addParam(
-            "guideOrientWrist", "bool", False
-        )
         self.pMirrorMid = self.addParam("mirrorMid", "bool", False)
         self.pMirrorIK = self.addParam("mirrorIK", "bool", False)
         self.pExtraTweak = self.addParam("extraTweak", "bool", False)
@@ -171,9 +168,6 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
         self.populateCheck(self.settingsTab.ikTR_checkBox, "ikTR")
         self.populateCheck(self.settingsTab.supportJoints_checkBox,
                            "supportJoints")
-        self.populateCheck(
-            self.settingsTab.guideOrientWrist_checkBox, "guideOrientWrist"
-        )
         self.populateCheck(self.settingsTab.mirrorMid_checkBox, "mirrorMid")
         self.populateCheck(self.settingsTab.mirrorIK_checkBox, "mirrorIK")
         self.populateCheck(self.settingsTab.extraTweak_checkBox, "extraTweak")
@@ -245,11 +239,6 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
             partial(self.updateCheck,
                     self.settingsTab.supportJoints_checkBox,
                     "supportJoints"))
-
-        self.settingsTab.guideOrientWrist_checkBox.stateChanged.connect(
-            partial(self.updateCheck,
-                    self.settingsTab.guideOrientWrist_checkBox,
-                    "guideOrientWrist"))
 
         self.settingsTab.mirrorMid_checkBox.stateChanged.connect(
             partial(self.updateCheck,
