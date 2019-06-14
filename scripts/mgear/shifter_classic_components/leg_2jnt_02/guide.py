@@ -14,8 +14,8 @@ import settingsUI as sui
 # guide info
 AUTHOR = "Jeremie Passerin, Miquel Campos"
 URL = "www.jeremiepasserin.com, www.miquel-campos.com"
-EMAIL = "geerem@hotmail.com, hello@miquel-campos.com"
-VERSION = [1, 4, 0]
+EMAIL = ""
+VERSION = [2, 0, 0]
 TYPE = "leg_2jnt_02"
 NAME = "leg"
 DESCRIPTION = "Knee thickness control. 2 bones leg with stretch, roundess, ik/fk..., This component "\
@@ -160,6 +160,9 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
         self.settingsTab.maxStretch_spinBox.setValue(
             self.root.attr("maxstretch").get())
 
+        self.settingsTab.kneeThickness_spinBox.setValue(
+            self.root.attr("kneeThickness").get())
+
         self.populateCheck(self.settingsTab.mirrorMid_checkBox, "mirrorMid")
         self.populateCheck(self.settingsTab.extraTweak_checkBox, "extraTweak")
         self.populateCheck(self.settingsTab.supportJoints_checkBox,
@@ -196,6 +199,11 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
             partial(self.updateSpinBox,
                     self.settingsTab.maxStretch_spinBox,
                     "maxstretch"))
+
+        self.settingsTab.kneeThickness_spinBox.valueChanged.connect(
+            partial(self.updateSpinBox,
+                    self.settingsTab.kneeThickness_spinBox,
+                    "kneeThickness"))
 
         self.settingsTab.div0_spinBox.valueChanged.connect(
             partial(self.updateSpinBox, self.settingsTab.div0_spinBox, "div0"))

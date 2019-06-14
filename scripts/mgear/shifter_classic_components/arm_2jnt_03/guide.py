@@ -16,7 +16,7 @@ import settingsUI as sui
 AUTHOR = "Jeremie Passerin, Miquel Campos"
 URL = "www.jeremiepasserin.com, www.miquel-campos.com"
 EMAIL = ""
-VERSION = [2, 0, 0]
+VERSION = [3, 0, 0]
 TYPE = "arm_2jnt_03"
 NAME = "arm"
 DESCRIPTION = "Elbow thickness control.New Up Vector roll control. 2 bones arm with Maya nodes for "\
@@ -167,6 +167,8 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
             int(self.root.attr("blend").get() * 100))
         self.settingsTab.maxStretch_spinBox.setValue(
             self.root.attr("maxstretch").get())
+        self.settingsTab.elbowThickness_spinBox.setValue(
+            self.root.attr("elbowThickness").get())
         self.populateCheck(self.settingsTab.ikTR_checkBox, "ikTR")
         self.populateCheck(self.settingsTab.supportJoints_checkBox,
                            "supportJoints")
@@ -224,6 +226,9 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
         self.settingsTab.maxStretch_spinBox.valueChanged.connect(
             partial(self.updateSpinBox,
                     self.settingsTab.maxStretch_spinBox, "maxstretch"))
+        self.settingsTab.elbowThickness_spinBox.valueChanged.connect(
+            partial(self.updateSpinBox,
+                    self.settingsTab.elbowThickness_spinBox, "elbowThickness"))
 
         self.settingsTab.div0_spinBox.valueChanged.connect(
             partial(self.updateSpinBox, self.settingsTab.div0_spinBox, "div0"))
