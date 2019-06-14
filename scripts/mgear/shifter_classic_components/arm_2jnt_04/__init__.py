@@ -100,6 +100,8 @@ class Component(component.Main):
                                             self.normal,
                                             "xz",
                                             self.negate)
+        if self.settings["guideOrientWrist"]:
+            t = self.guide.tra["wrist"]
 
         self.fk2_npo = primitive.addTransform(self.fk1_ctl,
                                               self.getName("fk2_npo"),
@@ -192,6 +194,12 @@ class Component(component.Main):
             self.root, self.getName("ik_cns"), self.guide.pos["wrist"])
 
         t = transform.getTransformFromPos(self.guide.pos["wrist"])
+
+        if self.settings["guideOrientWrist"]:
+            t = self.guide.tra["wrist"]
+            self.ik_cns.setMatrix(t)
+            self.ik_cns.setTranslation(self.guide.pos["wrist"], space="world")
+
         self.ikcns_ctl = self.addCtl(self.ik_cns,
                                      "ikcns_ctl",
                                      t,
@@ -214,6 +222,9 @@ class Component(component.Main):
                                                 self.normal,
                                                 "xy",
                                                 False)
+
+        if self.settings["guideOrientWrist"]:
+            m = self.guide.tra["wrist"]
 
         self.ik_ctl = self.addCtl(self.ikcns_ctl,
                                   "ik_ctl",
