@@ -16,8 +16,8 @@ import settingsUI as sui
 # guide info
 AUTHOR = "Jeremie Passerin, Miquel Campos"
 URL = "www.jeremiepasserin.com, www.miquel-campos.com"
-EMAIL = "geerem@hotmail.com, hello@miquel-campos.com"
-VERSION = [1, 2, 0]
+EMAIL = ""
+VERSION = [1, 3, 0]
 TYPE = "control_01"
 NAME = "control"
 DESCRIPTION = "Simple controler with space switch and Rot order selection. \n"\
@@ -85,6 +85,11 @@ class Guide(guide.ComponentGuide):
             "parentJointIndex", "long", -1, None, None)
 
         return
+
+    def postDraw(self):
+        self.add_ref_axis(self.root,
+                          self.root.neutralRotation,
+                          inverted=True)
 
 ##########################################################
 # Setting Page
