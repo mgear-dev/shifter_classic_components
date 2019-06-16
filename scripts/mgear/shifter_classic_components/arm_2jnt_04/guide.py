@@ -100,6 +100,10 @@ class Guide(guide.ComponentGuide):
                                                -1,
                                                None,
                                                None)
+    def postDraw(self):
+        "Add post guide draw elements to the guide"
+        self.add_ref_axis(self.wrist,
+                          self.root.guideOrientWrist)
 
     def get_divisions(self):
         """ Returns correct segments divisions """

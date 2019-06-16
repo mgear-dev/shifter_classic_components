@@ -87,6 +87,7 @@ class Guide(guide.ComponentGuide):
         return
 
     def postDraw(self):
+        "Add post guide draw elements to the guide"
         self.add_ref_axis(self.root,
                           self.root.neutralRotation,
                           inverted=True)
