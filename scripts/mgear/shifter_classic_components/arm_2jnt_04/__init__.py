@@ -100,8 +100,15 @@ class Component(component.Main):
                                             self.normal,
                                             "xz",
                                             self.negate)
+       # Define the wrist transform (wt)
         if self.settings["guideOrientWrist"]:
-            t = self.guide.tra["wrist"]
+            wt = self.guide.tra["wrist"]
+            if self.settings["mirrorIK"] and self.negate:
+                scl = [1, 1, -1]
+            else:
+                scl = [1, 1, 1]
+            wt = transform.setMatrixScale(wt, scl)
+            t = wt
 
         self.fk2_npo = primitive.addTransform(self.fk1_ctl,
                                               self.getName("fk2_npo"),
@@ -196,7 +203,7 @@ class Component(component.Main):
         t = transform.getTransformFromPos(self.guide.pos["wrist"])
 
         if self.settings["guideOrientWrist"]:
-            t = self.guide.tra["wrist"]
+            t = wt
             self.ik_cns.setMatrix(t)
             self.ik_cns.setTranslation(self.guide.pos["wrist"], space="world")
 
@@ -224,7 +231,7 @@ class Component(component.Main):
                                                 False)
 
         if self.settings["guideOrientWrist"]:
-            m = self.guide.tra["wrist"]
+            m = wt
 
         self.ik_ctl = self.addCtl(self.ikcns_ctl,
                                   "ik_ctl",

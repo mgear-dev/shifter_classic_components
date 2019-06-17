@@ -251,7 +251,7 @@ class Ui_Form(object):
         self.guideOrientWrist_checkBox.setToolTip(gqt.fakeTranslate("Form", "This option aligns the wrist with the guide.", None, -1))
         self.guideOrientWrist_checkBox.setStatusTip(gqt.fakeTranslate("Form", "This option aligns the wrist with the guide.", None, -1))
         self.guideOrientWrist_checkBox.setWhatsThis(gqt.fakeTranslate("Form", "This option aligns the wrist with the guide.", None, -1))
-        self.guideOrientWrist_checkBox.setText(gqt.fakeTranslate("Form", "Align wrist to guide orientation", None, -1))
+        self.guideOrientWrist_checkBox.setText(gqt.fakeTranslate("Form", "Align wrist to guide orientation. NOTE: This option override Mirror IK ctl behaviour", None, -1))
         self.squashStretchProfile_pushButton.setText(gqt.fakeTranslate("Form", "Squash and Stretch Profile", None, -1))
         self.ikRefArray_groupBox.setTitle(gqt.fakeTranslate("Form", "IK Reference Array", None, -1))
         self.ikRefArray_copyRef_pushButton.setText(gqt.fakeTranslate("Form", "Copy from UpV Ref", None, -1))
