@@ -57,7 +57,6 @@ class Guide(guide.ComponentGuide):
         centers = [self.root]
         centers.extend(self.locs)
         self.dispcrv = self.addDispCurve("crv", centers)
-        self.addDispCurve("crvRef", centers, 3)
 
     def addParameters(self):
         """Add the configurations settings"""
