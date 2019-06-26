@@ -90,7 +90,8 @@ class Guide(guide.ComponentGuide):
         "Add post guide draw elements to the guide"
         self.add_ref_axis(self.root,
                           self.root.neutralRotation,
-                          inverted=True)
+                          inverted=True,
+                          width=.5 / self.root.sx.get())
 
 ##########################################################
 # Setting Page
