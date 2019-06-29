@@ -12,8 +12,6 @@ from maya.app.general.mayaMixin import MayaQDockWidget
 
 import settingsUI as sui
 
-from mgear.core import vector
-
 
 # guide info
 AUTHOR = "Jeremie Passerin, Miquel Campos"
@@ -90,12 +88,11 @@ class Guide(guide.ComponentGuide):
 
     def postDraw(self):
         "Add post guide draw elements to the guide"
-        size = vector.getDistance(self.root.getTranslation(space="world"),
-                                  self.sizeRef.getTranslation(space="world"))
+        size = pm.xform(self.root, q=True, ws=True, scale=True)[0]
         self.add_ref_axis(self.root,
                           self.root.neutralRotation,
-                          inverted = True,
-                          width = .5 /size )
+                          inverted=True,
+                          width=.5 / size)
 
 ##########################################################
 # Setting Page
@@ -105,7 +102,7 @@ class Guide(guide.ComponentGuide):
 class settingsTab(QtWidgets.QDialog, sui.Ui_Form):
     """The Component settings UI"""
 
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         super(settingsTab, self).__init__(parent)
         self.setupUi(self)
 
@@ -113,11 +110,11 @@ class settingsTab(QtWidgets.QDialog, sui.Ui_Form):
 class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
     """Create the component setting window"""
 
-    def __init__(self, parent = None):
-        self.toolName=TYPE
+    def __init__(self, parent=None):
+        self.toolName = TYPE
         # Delete old instances of the componet settings window.
         pyqt.deleteInstances(self, MayaQDockWidget)
-        self.iconsList=['arrow',
+        self.iconsList = ['arrow',
                           'circle',
                           'compas',
                           'cross',

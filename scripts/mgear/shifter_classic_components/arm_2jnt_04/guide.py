@@ -100,10 +100,13 @@ class Guide(guide.ComponentGuide):
                                                -1,
                                                None,
                                                None)
+
     def postDraw(self):
         "Add post guide draw elements to the guide"
+        size = pm.xform(self.wrist, q=True, ws=True, scale=True)[0]
         self.add_ref_axis(self.wrist,
-                          self.root.guideOrientWrist)
+                          self.root.guideOrientWrist,
+                          width=.5 / size)
 
     def get_divisions(self):
         """ Returns correct segments divisions """
