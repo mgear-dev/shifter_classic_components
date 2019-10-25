@@ -655,11 +655,12 @@ class Component(component.Main):
         """Set the relation beetween object from guide to rig"""
         self.relatives["root"] = self.cnx0
         self.relatives["eff"] = self.cnx1
-
+        self.relatives["tan0"] = self.fk_ctl[1]
         self.controlRelatives["root"] = self.fk_ctl[0]
         self.controlRelatives["eff"] = self.fk_ctl[-2]
 
         self.jointRelatives["root"] = 0
+        self.jointRelatives["tan0"] = 1
         self.jointRelatives["eff"] = -1
 
         self.aliasRelatives["root"] = "base"
