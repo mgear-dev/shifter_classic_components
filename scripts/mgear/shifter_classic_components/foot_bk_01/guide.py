@@ -159,7 +159,7 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
         self.settingsTab.useRollCtl_checkBox.stateChanged.connect(
             partial(self.updateCheck,
                     self.settingsTab.useRollCtl_checkBox,
-                    "neutralpose"))
+                    "useRollCtl"))
         self.mainSettingsTab.connector_comboBox.currentIndexChanged.connect(
             partial(self.updateConnector,
                     self.mainSettingsTab.connector_comboBox,

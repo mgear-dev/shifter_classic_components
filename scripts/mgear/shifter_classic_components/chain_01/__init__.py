@@ -281,15 +281,25 @@ class Component(component.Main):
         """Set the relation beetween object from guide to rig"""
 
         self.relatives["root"] = self.loc[0]
-        self.controlRelatives["root"] = self.fk_ctl[0]
         self.jointRelatives["root"] = 0
+
+        if not self.isIk:
+            self.controlRelatives["root"] = self.fk_ctl[0]
+            self.controlRelatives["%s_loc" % (len(self.loc) - 1)] = self.fk_ctl[-1]
+        else:
+            self.controlRelatives["root"] = self.ik_ctl
+            self.controlRelatives["%s_loc" % (len(self.loc) - 1)] = self.ik_ctl
+
         for i in range(0, len(self.loc) - 1):
             self.relatives["%s_loc" % i] = self.loc[i + 1]
-            self.controlRelatives["%s_loc" % i] = self.fk_ctl[i + 1]
             self.jointRelatives["%s_loc" % i] = i + 1
             self.aliasRelatives["%s_ctl" % i] = i + 1
+            if not self.isIk:
+                self.controlRelatives["%s_loc" % i] = self.fk_ctl[i + 1]
+            else:
+                self.controlRelatives["%s_loc" % i] = self.ik_ctl
+
         self.relatives["%s_loc" % (len(self.loc) - 1)] = self.loc[-1]
-        self.controlRelatives["%s_loc" % (len(self.loc) - 1)] = self.fk_ctl[-1]
         self.jointRelatives["%s_loc" % (len(self.loc) - 1)] = len(self.loc) - 1
         self.aliasRelatives["%s_loc" % (len(self.loc) - 1)] = len(self.loc) - 1
 

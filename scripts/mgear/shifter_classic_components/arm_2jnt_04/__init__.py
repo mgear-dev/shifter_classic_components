@@ -279,6 +279,10 @@ class Component(component.Main):
                                                     self.normal,
                                                     "xz",
                                                     self.negate)
+
+        if self.settings["guideOrientWrist"]:
+            trnIK_ref = wt
+
         self.ik_ref = primitive.addTransform(self.ik_ctl_ref,
                                              self.getName("ik_ref"),
                                              trnIK_ref)
