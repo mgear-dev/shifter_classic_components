@@ -190,7 +190,7 @@ class Component(component.Main):
                 h=self.size * .1,
                 d=self.size * .1,
                 ro=datatypes.Vector([0, 0, 1.5708]),
-                tp=self.self.previusTagIk,
+                tp=self.previusTagIk,
                 mirrorConf=self.mirror_conf)
             if not self.settings["onlyMaster"]:
                 upv_curv_lvl = primitive.addTransform(
