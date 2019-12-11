@@ -43,6 +43,8 @@ class Guide(guide.ComponentGuide):
     email = EMAIL
     version = VERSION
 
+    connectors = ["orientation"]
+
     # =====================================================
     ##
     # @param self
@@ -190,6 +192,21 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
         for item in ikRefArrayItems:
             self.settingsTab.ikRefArray_listWidget.addItem(item)
 
+        # populate connections in main settings
+        for cnx in Guide.connectors:
+            self.mainSettingsTab.connector_comboBox.addItem(cnx)
+        cBox = self.mainSettingsTab.connector_comboBox
+        self.connector_items = [cBox.itemText(i) for i in range(cBox.count())]
+        currentConnector = self.root.attr("connector").get()
+        if currentConnector not in self.connector_items:
+            self.mainSettingsTab.connector_comboBox.addItem(currentConnector)
+            self.connector_items.append(currentConnector)
+            pm.displayWarning("The current connector: %s, is not a valid "
+                              "connector for this component. "
+                              "Build will Fail!!")
+        comboIndex = self.connector_items.index(currentConnector)
+        self.mainSettingsTab.connector_comboBox.setCurrentIndex(comboIndex)
+
     def create_componentLayout(self):
 
         self.settings_layout = QtWidgets.QVBoxLayout()
@@ -260,6 +277,11 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
                     self.settingsTab.ikRefArray_listWidget,
                     "ikrefarray"))
         self.settingsTab.ikRefArray_listWidget.installEventFilter(self)
+
+        self.mainSettingsTab.connector_comboBox.currentIndexChanged.connect(
+            partial(self.updateConnector,
+                    self.mainSettingsTab.connector_comboBox,
+                    self.connector_items))
 
     def eventFilter(self, sender, event):
         if event.type() == QtCore.QEvent.ChildRemoved:
