@@ -24,6 +24,8 @@ DESCRIPTION = "Stackable chain with special connector to drive many chains" \
     ", but can be used for any purpose. \n" \
     "This component is base in 'chain_FK_spline_02'"
 
+COMPATIBLE = [TYPE,
+              "chain_spring_lite_stack_master_01"]
 ##########################################################
 # CLASS
 ##########################################################
@@ -153,7 +155,6 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
         self.settingsTab.visHost_lineEdit.setText(
             self.root.attr("visHost").get())
 
-
     def create_componentLayout(self):
 
         self.settings_layout = QtWidgets.QVBoxLayout()
@@ -223,14 +224,13 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
         oType = pm.nodetypes.Transform
 
         oSel = pm.selected()
-        compatible = [TYPE]
         if oSel:
             if oSel[0] == self.root:
                 pm.displayWarning("Self root can not be Master. Cycle Warning")
             else:
                 if (isinstance(oSel[0], oType)
                         and oSel[0].hasAttr("comp_type")
-                        and oSel[0].attr("comp_type").get() in compatible):
+                        and oSel[0].attr("comp_type").get() in COMPATIBLE):
                     # check master chain FK segments
                     self_len = self._get_chain_segments_length(self.root)
                     master_len = self._get_chain_segments_length(oSel[0])
@@ -249,7 +249,7 @@ class componentSettings(MayaQWidgetDockableMixin, guide.componentMainSettings):
                     pm.displayWarning("The selected element is not a "
                                       "chain root or compatible chain")
                     pm.displayWarning("Complatible chain componentes"
-                                      " are: {}".format(str(compatible)))
+                                      " are: {}".format(str(COMPATIBLE)))
         else:
             pm.displayWarning("Nothing selected.")
             if lEdit.text():

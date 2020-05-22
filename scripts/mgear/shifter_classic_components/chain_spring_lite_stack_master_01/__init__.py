@@ -159,6 +159,73 @@ class Component(component.Main):
 
             self.aStiffness.append(aStiffness)
 
+        #######################
+        # setup Parameters
+        #######################
+        self.mid_twist_in_att = self.addSetupParam("mid_twist_in",
+                                                   "mid_twist_in",
+                                                   "double",
+                                                   0)
+
+        self.tip_twist_in_att = self.addSetupParam("tip_twist_in",
+                                                   "tip_twist_in",
+                                                   "double",
+                                                   0)
+
+        # wide is Y
+        self.mid_wide_in_att = self.addSetupParam("mid_wide_in",
+                                                  "mid_wide_in",
+                                                  "double",
+                                                  1)
+
+        self.tip_wide_in_att = self.addSetupParam("tip_wide_in",
+                                                  "tip_wide_in",
+                                                  "double",
+                                                  1)
+
+        # depth is Z
+        self.mid_depth_in_att = self.addSetupParam("mid_depth_in",
+                                                   "mid_depth_in",
+                                                   "double",
+                                                   1)
+
+        self.tip_depth_in_att = self.addSetupParam("tip_depth_in",
+                                                   "tip_depth_in",
+                                                   "double",
+                                                   1)
+        # OUT channels
+        self.mid_twist_out_att = self.addSetupParam("mid_twist_out",
+                                                    "mid_twist_out",
+                                                    "double",
+                                                    0)
+
+        self.tip_twist_out_att = self.addSetupParam("tip_twist_out",
+                                                    "tip_twist_out",
+                                                    "double",
+                                                    0)
+
+        # wide is Y
+        self.mid_wide_out_att = self.addSetupParam("mid_wide_out",
+                                                   "mid_wide_out",
+                                                   "double",
+                                                   1)
+
+        self.tip_wide_out_att = self.addSetupParam("tip_wide_out",
+                                                   "tip_wide_out",
+                                                   "double",
+                                                   1)
+
+        # depth is Z
+        self.mid_depth_out_att = self.addSetupParam("mid_depth_out",
+                                                    "mid_depth_out",
+                                                    "double",
+                                                    1)
+
+        self.tip_depth_out_att = self.addSetupParam("tip_depth_out",
+                                                    "tip_depth_out",
+                                                    "double",
+                                                    1)
+
     # =====================================================
     # OPERATORS
     # =====================================================
