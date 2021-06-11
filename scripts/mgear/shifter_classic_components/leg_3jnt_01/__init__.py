@@ -396,6 +396,12 @@ class Component(component.Main):
             self.ik_ctl,
             self.getName("ik_ref"),
             transform.getTransform(self.ik_ctl))
+        
+        self.ik_RefOffset = primitive.addTransform(
+            self.ik_ref,
+            self.getName("ikOffset_ref"),
+            transform.getTransform(self.legBonesIK[-1])
+        )
 
         self.fk_ref = primitive.addTransform(
             self.fk_ctl[3],
@@ -976,7 +982,7 @@ class Component(component.Main):
         pm.connectAttr(self.chain3bones[-1].attr("tx"),
                        self.legBonesIK[-1].attr("tx"))
         # foot twist roll
-        pm.orientConstraint(self.ik_ref, self.legBonesIK[-1], mo=True)
+        pm.orientConstraint(self.ik_RefOffset, self.legBonesIK[-1], mo=True)
 
         node.createMulNode(
             -1, self.chain3bones[-1].attr("tx"), self.ik2b_ik_ref.attr("tx"))
@@ -1081,7 +1087,7 @@ class Component(component.Main):
             elif perc == .666:
                 perc = .6669
 
-            perc = max(.001, min(.999, perc))
+            perc = max(.001, min(.9, perc))
 
             # Roll
             cts = [self.tws0_rot, self.tws1_rot, self.tws2_rot, self.tws3_rot]
